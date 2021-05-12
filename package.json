@@ -1,0 +1,37 @@
+{
+  "name": "@peter.naydenov/notice",
+  "version": "1.0.0",
+  "description": "Event emmiter - NOTICE",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "mocha test",
+    "cover": "nyc mocha"
+  },
+  "author": "Peter Naydenov",
+  "keywords": [
+    "events",
+    "emitter",
+    "publisher",
+    "subscriber",
+    "pubsub"
+  ],
+  "license": "ISC",
+  "devDependencies": {
+    "chai" : "4.3.4",
+    "mocha": "8.4.0",
+    "nyc"  : "15.1.0"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "node_modules",
+      "test"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ]
+  }
+}
