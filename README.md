@@ -165,7 +165,7 @@ const
  eBus.stop ( 'go' )
  eBus.emit ( 'go', 2 )
 // ---> result == 0
- eBus.start ( 'go' )
+ eBus.start ( 'go', 2 )
  eBus.emit ( 'go' )
  // ---> result == 8
 ```
