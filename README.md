@@ -173,10 +173,18 @@ const
 
 ## Release History
 
+### 1.0.1 ( 2022-08-15)
+- [x] Fix: Event data is coming in Array;
+- [x] Fix: Multiple instances of notice;
+
+
+
 ### 1.0.0 (2021-05-12)
 - [x] Initial code;
 - [x] Test package;
 - [x] Documentation;
+- [ ] Bug: Event data is coming in Array;
+- [ ] Bug: Multiple instances of notice;
 
 
 

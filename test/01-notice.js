@@ -10,7 +10,6 @@ describe ( 'Testing Notice', () => {
 it ( 'Standard event', () => {
     const eBus = notice ();
     let result = 0;
-
     eBus.on ( 'note', () => result += 1 )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
@@ -216,6 +215,47 @@ it ( 'Unsubscribe a function from non existing event', () => {
     eBus.emit ( 'note' )
     expect ( result ).to.be.equal ( 40 )
 }) // it unsibsribe a function
+
+
+
+it ( 'Event with primitive data', () => {
+    const eBus = notice ();
+    eBus.on  ( 'note' , a => expect (a).to.be.equal ( 12 )   )    
+    eBus.emit ( 'note', 12 )
+}) // it Event with primitive data
+
+
+
+it ( 'Event with object', () => {
+    const eBus = notice ();
+    eBus.on  ( 'note' , a => expect ( a['val'] ).to.be.equal ( 12 )   )    
+    eBus.emit ( 'note', {val:12} )
+}) // it Event with primitive data
+
+
+
+it ( 'Event with two values', () => {
+    const eBus = notice ();
+    eBus.on  ( 'note' , (str,a) => {
+                    expect ( str ).to.be.equal ( 'test' )
+                    expect (a.val).to.be.equal ( 12 )
+                })    
+    eBus.emit ( 'note', 'test', {val:12} )
+}) // it Event with primitive data
+
+
+
+it ( 'Multiple Notice instances', () => {
+    const
+         eBus1 = notice ()
+       , eBus2 = notice ()
+       ;
+
+    eBus1.on ( 'test', x => expect ( x ).to.be.equal ( 12 )   )
+    eBus2.on ( 'test', x => expect ( x ).to.be.equal ( 73 )   )
+    eBus1.emit ( 'test', 12 )
+    eBus2.emit ( 'test', 73 )
+}) // it Multiple Notice instances
 
 
 }) // define

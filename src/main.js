@@ -5,7 +5,7 @@ function notice () {
         , scrollOnce = {}  // Single events with their subscribers
         , ignore     = []  // Ignore event names ( general and single )
         ;
-    return function notice () {
+    function Notice () {
                     function on ( e, fn ) {
                             if ( !scroll[e] ) scroll[e] = []
                             scroll[e].push ( fn )
@@ -31,17 +31,17 @@ function notice () {
                                     let evNames = Object.keys ( scroll )
                                     evNames.forEach ( name => {
                                                     if ( ignore.includes(name) )   return
-                                                    scroll[name].forEach ( fn => fn(args))
+                                                    scroll[name].forEach ( fn => fn(...args))
                                             })
                                 }
                             if ( scrollOnce[e] ) {
                                         if ( ignore.includes(e) )   return
-                                        scrollOnce[e].forEach ( fn => fn(args)   )
+                                        scrollOnce[e].forEach ( fn => fn(...args)   )
                                         delete scrollOnce[e]
                                 }
                             if ( scroll[e]     )  {  
                                         if ( ignore.includes(e) ) return
-                                        scroll[e].forEach ( fn => fn(args)   )                
+                                        scroll[e].forEach ( fn => fn(...args)   )                
                                 }                
                         } // emit func.
                     function start ( e ) {
@@ -71,10 +71,12 @@ function notice () {
                                 , stop  // Ignore event for a while
                                 , start // Remove event from ignore list
                         }
-}}
+        } // notice fn.
+    return new Notice ()
+}
 
 
 
-module.exports = notice ()
+module.exports = notice
 
 
