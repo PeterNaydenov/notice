@@ -48,7 +48,7 @@ Register a regular event.
 ```js
   const eBus = notice ();
 
-  eBus.on ( 'start', ([name]) => console.log ( `Hey, ${name}!` )   )   // notice that data params from emit are coming as array
+  eBus.on ( 'start', name => console.log ( `Hey, ${name}!` )   )   
   eBus.emit ( 'start', 'Johny' )
 // ---> Hey, Johny!
   eBus.emit ( 'start', 'Vessy' )
@@ -64,7 +64,7 @@ Register a single event.
 ```js
 const eBus = notice ();
 
-eBus.once ( 'start', ([name]) => console.log ( `Hey, ${name}!` )   )   // notice that data params from emit is coming as array
+eBus.once ( 'start', name => console.log ( `Hey, ${name}!` )   )   // notice that data params from emit is coming as array
 eBus.emit ( 'start', 'Johny' )
 // ---> Hey, Johny!
 eBus.emit ( 'start', 'Vessy' )
@@ -114,8 +114,8 @@ Trigger the event and execute all subscribed functions.
 let result = 0;
 const 
       eBus = notice ()
-    , fn1 = ([x]) => result += 1 + x
-    , fn2 = ([x]) => result += 3 + x
+    , fn1 = x => result += 1 + x
+    , fn2 = x => result += 3 + x
     ;
  eBus.on ( 'go', fn1 )
  eBus.on ( 'go', fn2 )
@@ -135,8 +135,8 @@ Disable specified event.
 let result = 0;
 const 
       eBus = notice ()
-    , fn1 = ([x]) => result += 1 + x
-    , fn2 = ([x]) => result += 3 + x
+    , fn1 = x => result += 1 + x
+    , fn2 = x => result += 3 + x
     ;
  eBus.on ( 'go', fn1 )
  eBus.on ( 'go', fn2 )
@@ -157,8 +157,8 @@ Enable again specified event.
 let result = 0;
 const 
       eBus = notice ()
-    , fn1 = ([x]) => result += 1 + x
-    , fn2 = ([x]) => result += 3 + x
+    , fn1 = x => result += 1 + x
+    , fn2 = x => result += 3 + x
     ;
  eBus.on ( 'go', fn1 )
  eBus.on ( 'go', fn2 )
