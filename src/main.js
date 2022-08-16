@@ -1,11 +1,11 @@
 "use strict"
 function notice () {
-    let 
-          scroll     = {}  // General events with their subscribers
-        , scrollOnce = {}  // Single events with their subscribers
-        , ignore     = []  // Ignore event names ( general and single )
-        ;
     function Notice () {
+                    let 
+                          scroll     = {}  // General events with their subscribers
+                        , scrollOnce = {}  // Single events with their subscribers
+                        , ignore     = []  // Ignore event names ( general and single )
+                        ;
                     function on ( e, fn ) {
                             if ( !scroll[e] ) scroll[e] = []
                             scroll[e].push ( fn )
