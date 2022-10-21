@@ -5,6 +5,8 @@ function notice () {
                           scroll     = {}  // General events with their subscribers
                         , scrollOnce = {}  // Single events with their subscribers
                         , ignore     = []  // Ignore event names ( general and single )
+                        , debugFlag  = false 
+                        , debugHeader = ''
                         ;
                     function on ( e, fn ) {
                             if ( !scroll[e] ) scroll[e] = []
@@ -15,7 +17,7 @@ function notice () {
                             scrollOnce[e].push ( fn )
                         } // once func.
                     function off ( e, fx ) {
-                            if ( fx ) {   // fx is optional
+                            if ( fx ) {   // fx is optional
                                     if ( scroll[e]     )  scroll[e]     = scroll[e].filter     ( fn => fn !== fx )
                                     if ( scrollOnce[e] )  scrollOnce[e] = scrollOnce[e].filter ( fn => fn !== fx )
                                     if ( scroll[e] && scroll[e].length         === 0 )   delete scroll[e]
@@ -25,8 +27,21 @@ function notice () {
                             if ( scrollOnce[e] )   delete scrollOnce[e]
                             if ( scroll[e]     )   delete scroll[e]
                         } // off func.
+                    function debug ( val, header ) {
+                            debugFlag =  val ? true : false
+                            if ( header && (typeof header === 'string') )   debugHeader = header
+                        } // debug func.
                     function emit () {
                             const [ e, ...args ] = arguments
+                            if ( debugFlag ) {  
+                                        console.log ( `${debugHeader} Event "${e}" was triggered.`)
+                                        if ( args.length > 0 ) {
+                                            console.log ( 'Arguments:')
+                                            console.log ( ...args )
+                                            console.log ( '^----' )
+                                        }
+                                        
+                                }
                             if ( e == '*' ) {   // The wildcard '*' doesn't work for 'once' events
                                     let evNames = Object.keys ( scroll )
                                     evNames.forEach ( name => {
@@ -70,6 +85,7 @@ function notice () {
                                 , emit  // Trigger a event
                                 , stop  // Ignore event for a while
                                 , start // Remove event from ignore list
+                                , debug
                         }
         } // notice fn.
     return new Notice ()

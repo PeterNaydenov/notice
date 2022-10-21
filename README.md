@@ -38,6 +38,7 @@ eBus.emit ( 'note' )
     , emit  : 'Trigger a event'
     , stop  : 'Ignore event for a while'
     , start : 'Remove event from ignore list'
+    , debug : 'Returns a console message on each triggered event'
 }
 ```
 
@@ -171,7 +172,27 @@ const
 ```
 
 
+### Notice.debug ( state, label )
+Provide debug message on each event. By default is debug is 'off'.
+
+```js
+// Turn debug "on"
+eBus.debug ( true )
+
+// Turn debug "off"
+eBus.debug ( false )
+
+// Activate debugger and set a debug message prefix
+eBus.debug ( true, '[eBus]:' )
+eBus.emit ( 'dummy' )
+// --> [eBus]: Event "dummy" was triggered.
+```
+
+
 ## Release History
+
+### 1.1.0 ( 2022-10-21)
+- [x] Method 'debug' was added;
 
 ### 1.0.1 ( 2022-08-15)
 - [x] Fix: Event data is coming in Array;
