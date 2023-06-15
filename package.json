@@ -3,9 +3,10 @@
   "version": "1.1.0",
   "description": "Event emmiter - NOTICE",
   "main": "src/main.js",
+  "type": "module",
   "scripts": {
     "test": "mocha test",
-    "cover": "nyc mocha"
+    "cover": "c8 mocha"
   },
   "author": "Peter Naydenov",
   "keywords": [
@@ -15,13 +16,13 @@
     "subscriber",
     "pubsub"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
+    "c8": "^8.0.0",
     "chai": "4.3.7",
-    "mocha": "10.2.0",
-    "nyc": "15.1.0"
+    "mocha": "10.2.0"
   },
-  "nyc": {
+  "c8": {
     "include": [
       "src/**/*.js"
     ],

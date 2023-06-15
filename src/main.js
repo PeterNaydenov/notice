@@ -93,6 +93,6 @@ function notice () {
 
 
 
-module.exports = notice
+export default notice
 
 

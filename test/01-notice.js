@@ -1,11 +1,15 @@
 "use strict"
 
-const 
-      notice = require ( '../src/main' )
-    , expect = require ( 'chai' ).expect
-    ;
+import notice from '../src/main.js'
+import { expect } from 'chai'
+
+
+
+
 
 describe ( 'Testing Notice', () => {
+
+
 
 it ( 'Standard event', () => {
     const eBus = notice ();
@@ -256,6 +260,7 @@ it ( 'Multiple Notice instances', () => {
     eBus1.emit ( 'test', 12 )
     eBus2.emit ( 'test', 73 )
 }) // it Multiple Notice instances
+
 
 
 }) // define

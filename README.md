@@ -156,19 +156,20 @@ Enable again specified event.
 
 ```js
 let result = 0;
-const 
-      eBus = notice ()
-    , fn1 = x => result += 1 + x
-    , fn2 = x => result += 3 + x
-    ;
- eBus.on ( 'go', fn1 )
- eBus.on ( 'go', fn2 )
- eBus.stop ( 'go' )
- eBus.emit ( 'go', 2 )
-// ---> result == 0
- eBus.start ( 'go', 2 )
- eBus.emit ( 'go' )
- // ---> result == 8
+    const 
+          eBus = notice ()
+        , fn1 = x => result += 1 + x
+        , fn2 = x => result += 3 + x
+        ;
+     eBus.on ( 'go', fn1 )
+     eBus.on ( 'go', fn2 )
+     eBus.stop ( 'go' )
+     eBus.emit ( 'go', 2 )
+    // ---> result == 0
+     eBus.start ( 'go' )
+     eBus.emit ( 'go', 1 )
+     console.log ( result )
+     // ---> result == 6 
 ```
 
 
@@ -189,10 +190,24 @@ eBus.emit ( 'dummy' )
 ```
 
 
+
+
+
 ## Release History
+
+
+
+### 2.0.0 ( 2023-06-15)
+- [x] Library was converted to ES6 module;
+- [x] License was changed from ISC to MIT;
+
+
 
 ### 1.1.0 ( 2022-10-21)
 - [x] Method 'debug' was added;
+
+
+
 
 ### 1.0.1 ( 2022-08-15)
 - [x] Fix: Event data is coming in Array;
