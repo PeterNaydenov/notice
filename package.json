@@ -8,6 +8,10 @@
     "test": "mocha test",
     "cover": "c8 mocha"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeterNaydenov/notice"
+  },
   "author": "Peter Naydenov",
   "keywords": [
     "events",
