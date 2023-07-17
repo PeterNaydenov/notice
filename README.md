@@ -35,6 +35,7 @@ eBus.emit ( 'note' )
       on    : 'Register a event'
     , once  : 'Register a single event'
     , off   : 'Unregister regular and single events'
+    , reset : 'Remove all events and functions from the event emitter' // After version 2.1.0
     , emit  : 'Trigger a event'
     , stop  : 'Ignore event for a while'
     , start : 'Remove event from ignore list'
@@ -103,7 +104,25 @@ const
  // ---> result == 5. Nothing changed
 ```
 
+### Notice.reset ( )
+Will remove all events and functions from the event emitter.
+```js
+let result = 0;
+const 
+      eBus = notice ()
+    , fn1 = () => result += 1
+    , fn2 = () => result += 3
+    , fn3 = () => result += 20
+    ;
 
+ eBus.on ( 'go', fn1 )
+ eBus.on ( 'go', fn2 )
+ eBus.on ( 'load', fn3 )
+ eBus.reset () // Remove all events and functions
+ eBus.emit ( 'go' )
+ eBus.emit ( 'load' )
+// ---> result == 0
+```
 
 
 ### Notice.emit ( eventName, data )
@@ -191,38 +210,10 @@ eBus.emit ( 'dummy' )
 
 
 
+## External Links
 
-
-## Release History
-
-
-
-### 2.0.0 ( 2023-06-15)
-- [x] Library was converted to ES6 module;
-- [x] License was changed from ISC to MIT;
-
-
-
-### 1.1.0 ( 2022-10-21)
-- [x] Method 'debug' was added;
-
-
-
-
-### 1.0.1 ( 2022-08-15)
-- [x] Fix: Event data is coming in Array;
-- [x] Fix: Multiple instances of notice;
-
-
-
-### 1.0.0 (2021-05-12)
-- [x] Initial code;
-- [x] Test package;
-- [x] Documentation;
-- [ ] Bug: Event data is coming in Array;
-- [ ] Bug: Multiple instances of notice;
-
-
+- [History of changes](https://github.com/PeterNaydenov/notice/Changelog.md)
+- [MIT License](https://github.com/PeterNaydenov/notice/LICENSE)
 
 
 

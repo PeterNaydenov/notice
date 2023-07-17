@@ -27,6 +27,11 @@ function notice () {
                             if ( scrollOnce[e] )   delete scrollOnce[e]
                             if ( scroll[e]     )   delete scroll[e]
                         } // off func.
+                    function reset () {
+                            scroll     = {}
+                            scrollOnce = {}
+                            ignore     = []
+                        } // reset func.
                     function debug ( val, header ) {
                             debugFlag =  val ? true : false
                             if ( header && (typeof header === 'string') )   debugHeader = header
@@ -82,6 +87,7 @@ function notice () {
                                   on    // Register a event
                                 , once  // Register a single event 
                                 , off   // Unregister regular and single events
+                                , reset // Unregister all events
                                 , emit  // Trigger a event
                                 , stop  // Ignore event for a while
                                 , start // Remove event from ignore list

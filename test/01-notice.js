@@ -69,6 +69,20 @@ it ( 'Remove single event', () => {
 
 
 
+it ( 'Reset the emitter', () => {
+    const eBus = notice ();
+    let result = 0;
+
+    eBus.once ( 'note', () => result += 1 )
+    eBus.on   ( 'note', () => result += 3 )
+    eBus.on   ( 'boom', () => result += 9 )
+    eBus.reset ()
+    eBus.emit ( 'note' )
+    eBus.emit ( 'boom' )
+    expect ( result ).to.be.equal ( 0 )
+}) // it reset the emitter
+
+
 it ( 'Stop and resume standard event', () => {
     const eBus = notice ();
     let result = 0;
