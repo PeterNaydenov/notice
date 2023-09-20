@@ -1,6 +1,12 @@
 # Release History
 
 
+
+### 2.2.0 ( 2023-09-20)
+- [x] Listen with wildcard was added;
+
+
+
 ### 2.1.0 ( 2023-07-17)
 - [x] Method 'reset' was added. It removes all events and functions from the event emitter; 
 

@@ -2,7 +2,7 @@
 function notice () {
     function Notice () {
                     let 
-                          scroll     = {}  // General events with their subscribers
+                          scroll     = {'*':[]}  // General events with their subscribers
                         , scrollOnce = {}  // Single events with their subscribers
                         , ignore     = []  // Ignore event names ( general and single )
                         , debugFlag  = false 
@@ -13,6 +13,7 @@ function notice () {
                             scroll[e].push ( fn )
                         } // on func.
                     function once ( e, fn ) {
+                            if ( e === '*' )   return  // The wildcard '*' doesn't work for 'once' events
                             if ( !scrollOnce[e] )   scrollOnce[e] = []
                             scrollOnce[e].push ( fn )
                         } // once func.
@@ -47,22 +48,27 @@ function notice () {
                                         }
                                         
                                 }
-                            if ( e == '*' ) {   // The wildcard '*' doesn't work for 'once' events
-                                    let evNames = Object.keys ( scroll )
-                                    evNames.forEach ( name => {
-                                                    if ( ignore.includes(name) )   return
-                                                    scroll[name].forEach ( fn => fn(...args))
-                                            })
+
+                            function exeCallback ( name ) {
+                                        if ( name === '*' )   return    
+                                        if ( ignore.includes(name) )   return
+                                        scroll[name].forEach ( fn => fn(...args))
+                                        scroll['*'].forEach ( fn => fn(e,...args)   )
+                                } // exeCallback func.
+
+                            if ( e === '*' ) {   // The wildcard '*' doesn't work for 'once' events
+                                        let evNames = Object.keys ( scroll )
+                                        evNames.forEach ( name => exeCallback(name)   )
+                                        return
                                 }
                             if ( scrollOnce[e] ) {
                                         if ( ignore.includes(e) )   return
                                         scrollOnce[e].forEach ( fn => fn(...args)   )
                                         delete scrollOnce[e]
                                 }
-                            if ( scroll[e]     )  {  
-                                        if ( ignore.includes(e) ) return
-                                        scroll[e].forEach ( fn => fn(...args)   )                
-                                }                
+                            if ( scroll[e]     ) { 
+                                        exeCallback ( e )
+                                }
                         } // emit func.
                     function start ( e ) {
                             if ( e === '*' ) {  

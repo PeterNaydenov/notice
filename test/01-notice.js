@@ -127,6 +127,45 @@ it ( 'Emit with wildcard', () => {
 }) // it emit with wildcard
 
 
+
+it ( 'Listen with wildcard', () => {
+    const eBus = notice ();
+    let 
+          result = 0
+        , count = 0
+        ;
+
+    eBus.on ( 'first'  , () => result+=1  )
+    eBus.on ( 'second', () => result+= 3 )
+    eBus.on ( '*'     , e => {
+                            expect (['first','second']).to.include ( e )
+                            count++    
+                    })
+
+    eBus.emit ( 'first' )
+    eBus.emit ( 'second' )
+    expect ( result ).to.be.equal ( 4 )
+    expect ( count ).to.be.equal ( 2 )
+}) // it listen with wildcard
+
+
+
+it ( 'Listen and emit with wildcard', () => {
+    const eBus = notice ();
+    let result = 0;
+
+    eBus.on ( 'first'  , () => result+=1  )
+    eBus.on ( 'second', () => result+= 3 )
+    eBus.on ( '*'     , e => {
+                            expect (e).to.be.equal ( '*' )
+                            result+=10 
+                    })
+    eBus.emit ( '*' )
+    expect ( result ).to.be.equal ( 24 )
+}) // it listen and emit with wildcard
+
+
+
 it ( 'Stop and start with wildcard', () => {
     const eBus = notice ();
     let result = 0;
