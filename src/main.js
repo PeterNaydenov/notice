@@ -29,7 +29,7 @@ function notice () {
                             if ( scroll[e]     )   delete scroll[e]
                         } // off func.
                     function reset () {
-                            scroll     = {}
+                            scroll     = {'*':[]}
                             scrollOnce = {}
                             ignore     = []
                         } // reset func.

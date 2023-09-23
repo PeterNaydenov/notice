@@ -1,9 +1,11 @@
 # Release History
 
-
+### 2.2.1 ( 2023-10-23)
+- [x] Fix: Calling 'Reset' breaks callback execution;
 
 ### 2.2.0 ( 2023-09-20)
 - [x] Listen with wildcard was added;
+- [ ] Bug: Calling 'Reset' breaks callback execution;
 
 
 
