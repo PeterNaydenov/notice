@@ -212,8 +212,8 @@ eBus.emit ( 'dummy' )
 
 ## External Links
 
-- [History of changes](https://github.com/PeterNaydenov/notice/Changelog.md)
-- [MIT License](https://github.com/PeterNaydenov/notice/LICENSE)
+- [History of changes](https://github.com/PeterNaydenov/notice/blob/master/Changelog.md)
+- [MIT License](https://github.com/PeterNaydenov/notice/blob/master/LICENSE)
 
 
 
