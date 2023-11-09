@@ -1,6 +1,6 @@
 {
   "name": "@peter.naydenov/notice",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Event emmiter - NOTICE",
   "main": "src/main.js",
   "type": "module",
