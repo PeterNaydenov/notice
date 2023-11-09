@@ -1,5 +1,13 @@
 # Release History
 
+
+
+
+### 2.2.2 ( 2023-11-09)
+- [x] Badges and head image were added to README.md;
+
+
+
 ### 2.2.1 ( 2023-10-23)
 - [x] Fix: Calling 'Reset' breaks callback execution;
 

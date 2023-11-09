@@ -1,4 +1,16 @@
+<img src="notice-desk.png" width="100%" alt="Notice" align="center" />
+
+----
+
+
+
 # Notice (@peter.naydenov/notice)
+
+![version](https://img.shields.io/github/package-json/v/peterNaydenov/notice)
+![license](https://img.shields.io/github/license/peterNaydenov/notice)
+![issues](https://img.shields.io/github/issues/peterNaydenov/notice)
+![npm package minimized gzipped size (scoped version select exports)](https://img.shields.io/bundlejs/size/%40peter.naydenov/notice)
+
 
 Notice is an simple event emitter. Define a behaviour related to event and then trigger the event. 
 
