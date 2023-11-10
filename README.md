@@ -9,7 +9,8 @@
 ![version](https://img.shields.io/github/package-json/v/peterNaydenov/notice)
 ![license](https://img.shields.io/github/license/peterNaydenov/notice)
 ![issues](https://img.shields.io/github/issues/peterNaydenov/notice)
-![npm package minimized gzipped size (scoped version select exports)](https://img.shields.io/bundlejs/size/%40peter.naydenov/notice)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/%40peter.naydenov%2Fnotice)
+
 
 
 Notice is an simple event emitter. Define a behaviour related to event and then trigger the event. 
