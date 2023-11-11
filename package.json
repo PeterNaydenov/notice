@@ -2,6 +2,8 @@
   "name": "@peter.naydenov/notice",
   "version": "2.2.2",
   "description": "Event emmiter - NOTICE",
+  "author": "Peter Naydenov",
+  "license": "MIT",
   "main": "src/main.js",
   "type": "module",
   "scripts": {
@@ -12,7 +14,6 @@
     "type": "git",
     "url": "git+https://github.com/PeterNaydenov/notice"
   },
-  "author": "Peter Naydenov",
   "keywords": [
     "events",
     "emitter",
@@ -20,7 +21,6 @@
     "subscriber",
     "pubsub"
   ],
-  "license": "MIT",
   "devDependencies": {
     "c8": "^8.0.1",
     "chai": "4.3.10",

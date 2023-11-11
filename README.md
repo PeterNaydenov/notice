@@ -239,4 +239,4 @@ eBus.emit ( 'dummy' )
 
 
 ## License
-'notice' is released under the [ISC License](https://opensource.org/licenses/ISC).
+'notice' is released under the [MIT License](https://opensource.org/licenses/ISC).
