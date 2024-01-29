@@ -2,6 +2,11 @@
 
 
 
+### 2.2.3 ( 2024-01-29)
+- [x] Folder 'dist' was added. It contains compiled files for commonjs and es6 modules;
+- [x] Package.json: "exports" section was added. Allows you to use package as commonjs or es6 module without additional configuration;
+
+
 
 ### 2.2.2 ( 2023-11-09)
 - [x] Badges and head image were added to README.md;
