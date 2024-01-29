@@ -1,16 +1,16 @@
 {
   "name": "@peter.naydenov/notice",
   "description": "Event emmiter - NOTICE",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "license": "MIT",
   "author": "Peter Naydenov",
   "main": "./dist/notice.umd.js",
   "type": "module",
   "exports": {
     ".": {
-          "import": "./dist/notice.esm.mjs",
-          "require": "./dist/notice.cjs",
-          "default": "./dist/notice.umd.js"
+      "import": "./dist/notice.esm.mjs",
+      "require": "./dist/notice.cjs",
+      "default": "./dist/notice.umd.js"
     },
     "./package.json": "./package.json",
     "./dist/*": "./dist/*",
