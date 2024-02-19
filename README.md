@@ -6,9 +6,9 @@
 
 # Notice (@peter.naydenov/notice)
 
-![version](https://img.shields.io/github/package-json/v/peterNaydenov/notice)
-![license](https://img.shields.io/github/license/peterNaydenov/notice)
-![issues](https://img.shields.io/github/issues/peterNaydenov/notice)
+![Version](https://img.shields.io/github/package-json/v/peterNaydenov/notice)
+![License](https://img.shields.io/github/license/peterNaydenov/notice)
+![Issues](https://img.shields.io/github/issues/peterNaydenov/notice)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/%40peter.naydenov%2Fnotice)
 
 
