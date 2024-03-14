@@ -316,6 +316,27 @@ it ( 'Multiple Notice instances', () => {
 
 
 
+it ( 'Stop execution of the subscriber list on condition', () => {
+        const eBus = notice ();
+        let x = 0;
+        eBus.on ( 'note', () => x++ )
+        eBus.on ( 'note', () => {   // This function returns 'stop' and will stop the execution of the following functions
+                            if ( x === 1 )   return 'stop'
+                        }) 
+        eBus.on ( 'note', () => x++ )
+        /**
+         *  Subscribers functions for the event 'note' are 3. In general, functions don't have to return anything.
+         *  If a function returns string 'stop', stops executing the rest of the subscriber functions.
+         * 
+         *  You can build a condition subscriber functions. Register them before main subscriber function to
+         *  prevent the execution if the conditions are not met.
+         */
+        eBus.emit ( 'note' )
+        expect ( x ).to.be.equal ( 1 )
+}) // it stop execution of the subscriber list on condition
+
+
+
 }) // define
 
 

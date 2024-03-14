@@ -52,7 +52,12 @@ function notice () {
                             function exeCallback ( name ) {
                                         if ( name === '*' )   return    
                                         if ( ignore.includes(name) )   return
-                                        scroll[name].forEach ( fn => fn(...args))
+                                        scroll[name].every ( fn => {
+                                                            const r = fn ( ...args );
+                                                            if ( typeof(r) !== 'string'     )   return true
+                                                            if ( r.toUpperCase() === 'STOP' )   return false
+                                                            return true
+                                                        })
                                         scroll['*'].forEach ( fn => fn(e,...args)   )
                                 } // exeCallback func.
 

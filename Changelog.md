@@ -1,6 +1,10 @@
 # Release History
 
 
+### 2.3.0 ( 2024-03-14 )
+- [x] Stop execution of the event callbacks on first callback that returns string 'stop';
+
+
 
 ### 2.2.3 ( 2024-01-29)
 - [x] Folder 'dist' was added. It contains compiled files for commonjs and es6 modules;
@@ -15,6 +19,8 @@
 
 ### 2.2.1 ( 2023-10-23)
 - [x] Fix: Calling 'Reset' breaks callback execution;
+
+
 
 ### 2.2.0 ( 2023-09-20)
 - [x] Listen with wildcard was added;

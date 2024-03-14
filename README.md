@@ -12,8 +12,18 @@
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/%40peter.naydenov%2Fnotice)
 
 
+`Notice` is an simple event emitter. Define a behaviour related to event and then trigger the event.  
+Register multiple callbacks to the same event. Order of execution is the same as the order of registration.
+Use method '**stop**' to mute the event for a while. Use method '**start**' to unmute the event. Method '**off**' will remove the event and all related callbacks. Method 'reset' will remove all events and functions from the event emitter.
 
-Notice is an simple event emitter. Define a behaviour related to event and then trigger the event. 
+
+
+## Last Updates
+- After version 2.1.0  Method 'reset' was added. It removes all events and functions from the event emitter;
+- After version 2.3.0  If callback that returns a string 'stop', the execution of followed callbacks will be stopped. Use this functionality to create a condition checking functions before  your main callback if needed;
+
+
+
 
 ## Installation
 Write in your project
@@ -29,12 +39,53 @@ npm install @peter.naydenov/notice
 ## How to use it
 Here is simple example for using this trivial event emitter:
 ```js
+// with ES6 modules:
 import notice from '@peter.naydenov/notice'
+// with CommonJS:
+// const notice = require('@peter.naydenov/notice')
 const eBus   = notice ();
 
 eBus.on ( 'note' , () => console.log ( 'hey!')   )
 eBus.emit ( 'note' )
 // ---> 'hey!'
+
+// example 2
+eBus.on ( 'note' , () => console.log ( 'hey!')   )
+eBus.on ( 'note' , () => console.log ( 'ho!')   )
+eBus.emit ( 'note' )   // will execute all functions related to the event
+// ---> 'hey!ho!'
+
+// example 3
+eBus.on ( 'note' , () => console.log ( 'hey!')   )
+eBus.on ( 'note' , () => console.log ( 'ho!')   )
+eBus.off ( 'note' )   // will remove all functions related to the event
+eBus.emit ( 'note' )   // nothing will happen
+
+// example 4
+let x = 0;
+eBus.on ( 'note' , () => { 
+                        console.log ( 'hey!')
+                        if ( x === 0 ) {
+                                x++
+                                return 'stop'
+                            }
+                })
+eBus.on ( 'note' , () => {
+                        console.log ( 'ho!')
+                        x++
+                  })
+eBus.emit ( 'note' )   // Will execute only the first function. If callback returns 'stop', the execution of callbacks will be stopped.
+// ---> 'hey!'
+// x == 1
+
+
+
+// example 5
+eBus.on ( 'note' , () => console.log ( 'hey!')   )
+eBus.stop ( 'note' )   // will mute the event
+eBus.emit ( 'note' )   // nothing will happen
+eBus.start ( 'note' )  // will unmute the event
+eBus.emit ( 'note' )   // ---> 'hey!'
 ```
 
 
