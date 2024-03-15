@@ -336,6 +336,18 @@ it ( 'Stop execution of the subscriber list on condition', () => {
 }) // it stop execution of the subscriber list on condition
 
 
+it ( 'Stop execution of the subscriber list on condition with wildcard', () => {
+        const eBus = notice ();
+        let x = 0;
+        eBus.on ( 'note', () => 'STOP' ) // First subscriber returns 'STOP' and stops the execution of the rest of the subscribers, including the wildcard
+        eBus.on ( 'note', () => x++ ) 
+        eBus.on ( '*', () => x++ )
+        
+        eBus.emit ( 'note' )
+        expect ( x ).to.be.equal ( 0 )
+}) // it stop execution of the subscriber list on condition with wildcard
+
+
 
 }) // define
 

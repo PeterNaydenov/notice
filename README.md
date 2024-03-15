@@ -21,6 +21,7 @@ Use method '**stop**' to mute the event for a while. Use method '**start**' to u
 ## Last Updates
 - After version 2.1.0  Method 'reset' was added. It removes all events and functions from the event emitter;
 - After version 2.3.0  If callback that returns a string 'stop', the execution of followed callbacks will be stopped. Use this functionality to create a condition checking functions before  your main callback if needed;
+- In version 2.3.1 and above: Callback stop will stop the wildcard callbacks as well;
 
 
 

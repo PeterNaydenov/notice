@@ -50,15 +50,19 @@ function notice () {
                                 }
 
                             function exeCallback ( name ) {
+                                        let stopped = false;
                                         if ( name === '*' )   return    
                                         if ( ignore.includes(name) )   return
                                         scroll[name].every ( fn => {
                                                             const r = fn ( ...args );
                                                             if ( typeof(r) !== 'string'     )   return true
-                                                            if ( r.toUpperCase() === 'STOP' )   return false
+                                                            if ( r.toUpperCase() === 'STOP' ) {  
+                                                                                                stopped = true
+                                                                                                return false
+                                                                                    }
                                                             return true
                                                         })
-                                        scroll['*'].forEach ( fn => fn(e,...args)   )
+                                        if ( !stopped )   scroll['*'].forEach ( fn => fn(e,...args)   )
                                 } // exeCallback func.
 
                             if ( e === '*' ) {   // The wildcard '*' doesn't work for 'once' events

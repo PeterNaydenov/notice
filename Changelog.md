@@ -1,9 +1,13 @@
 # Release History
 
 
+### 2.3.1 ( 2024-03-15 )
+- [x] Fix: Callback stop should stop the wildcard callbacks as well;
+
+
 ### 2.3.0 ( 2024-03-14 )
 - [x] Stop execution of the event callbacks on first callback that returns string 'stop';
-
+- [ ] Bug: Callback stop should stop the wildcard callbacks as well;
 
 
 ### 2.2.3 ( 2024-01-29)
