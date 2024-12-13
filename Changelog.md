@@ -1,6 +1,13 @@
 # Release History
 
 
+
+### 2.3.2 ( 2024-12-13 )
+- [x] JSDoc comments were added;
+- [x] TypeScript generated types were added;
+
+
+
 ### 2.3.1 ( 2024-03-15 )
 - [x] Fix: Callback stop should stop the wildcard callbacks as well;
 
