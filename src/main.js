@@ -10,7 +10,7 @@ function notice () {
                         ;
                     /**
                      *  Register a regular event.
-                     *  @param {string} e - Name of the event;
+                     *  @param {string|Symbol} e - Name of the event;
                      *  @param {function} fn - Behaviour that will be assigned to this eventName;
                      *  @returns void
                      */
@@ -21,7 +21,7 @@ function notice () {
 
                     /**
                      * Register a single event that will be triggered only once.
-                     * @param {string} e - Name of the event; the wildcard '*' is not supported.
+                     * @param {string|Symbol} e - Name of the event; the wildcard '*' is not supported.
                      * @param {function} fn - Behaviour that will be executed when the event is triggered.
                      */
                     function once ( e, fn ) {
@@ -35,7 +35,7 @@ function notice () {
                      * If 'fx' is not provided, all functions related to the event will be removed.
                      * Works with both regular and single events.
                      * 
-                     * @param {string} e - Name of the event.
+                     * @param {string|Symbol} e - Name of the event.
                      * @param {function} [fx] - Optional. The specific function to be removed.
                      */
                     function off ( e, fx ) {
@@ -73,7 +73,7 @@ function notice () {
                     /**
                      * Triggers an event and executes all associated functions.
                      * 
-                     * @param {string} e - Name of the event to be triggered.
+                     * @param {string|Symbol} e - Name of the event to be triggered.
                      * @param {...*} [args] - Optional. Arguments to be passed to the callback functions.
                      * @returns void
                      */
@@ -122,7 +122,7 @@ function notice () {
                     /**
                      * Enables again specified event.
                      * 
-                     * @param {string} e - Name of the event to be enabled again; the wildcard '*' is supported.
+                     * @param {string|Symbol} e - Name of the event to be enabled again; the wildcard '*' is supported.
                      * @returns void
                      */
                     function start ( e ) {
@@ -135,7 +135,7 @@ function notice () {
                     /**
                      * Temporarily disables specified event.
                      * 
-                     * @param {string} e - Name of the event to be disabled; the wildcard '*' is supported.
+                     * @param {string|Symbol} e - Name of the event to be disabled; the wildcard '*' is supported.
                      * @returns void
                      */
                     function stop ( e ) {
