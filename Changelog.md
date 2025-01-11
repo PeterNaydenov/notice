@@ -2,6 +2,13 @@
 
 
 
+
+
+### 2.4.0 ( 2025-01-11 )
+- [x] Types: Name of the event could be a symbol;
+
+
+
 ### 2.3.2 ( 2024-12-13 )
 - [x] JSDoc comments were added;
 - [x] TypeScript generated types were added;
@@ -12,9 +19,11 @@
 - [x] Fix: Callback stop should stop the wildcard callbacks as well;
 
 
+
 ### 2.3.0 ( 2024-03-14 )
 - [x] Stop execution of the event callbacks on first callback that returns string 'stop';
 - [ ] Bug: Callback stop should stop the wildcard callbacks as well;
+
 
 
 ### 2.2.3 ( 2024-01-29)
