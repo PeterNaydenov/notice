@@ -2,6 +2,9 @@
 
 
 
+### 2.4.1 ( 2025-05-02 )
+- [x] Refactoring: Some speed optimizations;
+
 
 
 ### 2.4.0 ( 2025-01-11 )
