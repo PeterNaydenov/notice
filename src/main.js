@@ -4,7 +4,7 @@ function notice () {
                     let 
                           scroll     = {'*':[]}  // General events with their subscribers
                         , scrollOnce = {}  // Single events with their subscribers
-                        , ignore     = []  // Ignore event names ( general and single )
+                        , ignore     = new Set ()  // Ignore event names ( general and single )
                         , debugFlag  = false 
                         , debugHeader = ''
                         ;
@@ -56,7 +56,7 @@ function notice () {
                     function reset () {
                             scroll     = {'*':[]}
                             scrollOnce = {}
-                            ignore     = []
+                            ignore     = new Set ()
                         } // reset func.
                     /**
                      *  Enables or disables debug mode.
@@ -92,7 +92,7 @@ function notice () {
                             function exeCallback ( name ) {
                                         let stopped = false;
                                         if ( name === '*' )   return    
-                                        if ( ignore.includes(name) )   return
+                                        if ( ignore.has(name) )   return
                                         scroll[name].every ( fn => {
                                                             const r = fn ( ...args );
                                                             if ( typeof(r) !== 'string'     )   return true
@@ -111,7 +111,7 @@ function notice () {
                                         return
                                 }
                             if ( scrollOnce[e] ) {
-                                        if ( ignore.includes(e) )   return
+                                        if ( ignore.has(e) )   return
                                         scrollOnce[e].forEach ( fn => fn(...args)   )
                                         delete scrollOnce[e]
                                 }
@@ -127,10 +127,10 @@ function notice () {
                      */
                     function start ( e ) {
                             if ( e === '*' ) {  
-                                        ignore = []
+                                        ignore.clear ()
                                         return
                                 }
-                            ignore = ignore.filter ( type => e != type )
+                            ignore.delete ( e )
                         } // start func.
                     /**
                      * Temporarily disables specified event.
@@ -144,10 +144,10 @@ function notice () {
                                               evNames     = Object.keys ( scroll )
                                             , evOnceNames = Object.keys ( scrollOnce )
                                             ;
-                                        ignore = [ ...evOnceNames, ...evNames ]
+                                        ignore = new Set ([ ...evOnceNames, ...evNames ])
                                         return
                                 }
-                            ignore.push ( e )
+                            ignore.add ( e )
                         } // stop func.
 
                     return {
