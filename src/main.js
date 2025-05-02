@@ -1,6 +1,6 @@
 "use strict"
 function notice () {
-    function Notice () {
+    
                     let 
                           scroll     = {'*':[]}  // General events with their subscribers
                         , scrollOnce = {}  // Single events with their subscribers
@@ -160,9 +160,7 @@ function notice () {
                                 , start // Remove event from ignore list
                                 , debug
                         }
-        } // notice fn.
-    return Notice ()
-}
+} // notice func.
 
 
 
