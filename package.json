@@ -1,7 +1,7 @@
 {
   "name": "@peter.naydenov/notice",
   "description": "Event emmiter - NOTICE",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "license": "MIT",
   "author": "Peter Naydenov",
   "main": "./src/main.js",
@@ -38,8 +38,8 @@
     "typescript": "^6.0.2"
   },
   "overrides": {
-    "diff" : "^8.0.4",
-    "serialize-javascript" : "^7.0.5"
+    "diff": "^8.0.4",
+    "serialize-javascript": "^7.0.5"
   },
   "c8": {
     "include": [
