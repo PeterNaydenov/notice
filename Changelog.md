@@ -1,6 +1,10 @@
 # Release History
 
 
+### 2.4.2 ( 2026-04-02 )
+- [x] Dependencies and devDependencies updates;
+
+
 
 ### 2.4.1 ( 2025-05-02 )
 - [x] Refactoring: Some speed optimizations;
