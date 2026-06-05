@@ -60,5 +60,8 @@
     "publisher",
     "subscriber",
     "pubsub"
-  ]
+  ],
+  "allowScripts": {
+    "fsevents@2.3.2": true
+  }
 }
