@@ -42,12 +42,13 @@ function notice () {
                             if ( fx ) {   // fx is optional
                                     if ( scroll[e]     )  scroll[e]     = scroll[e].filter     ( fn => fn !== fx )
                                     if ( scrollOnce[e] )  scrollOnce[e] = scrollOnce[e].filter ( fn => fn !== fx )
-                                    if ( scroll[e] && scroll[e].length         === 0 )   delete scroll[e]
-                                    if ( scrollOnce[e] && scrollOnce[e].length === 0 )   delete scroll[e]
+                                    if ( e !== '*' && scroll[e] && scroll[e].length === 0 )   delete scroll[e]   // scroll['*'] must always exist - 'emit' relies on it
+                                    if ( scrollOnce[e] && scrollOnce[e].length === 0 )   delete scrollOnce[e]
                                     return
                                 }
                             if ( scrollOnce[e] )   delete scrollOnce[e]
-                            if ( scroll[e]     )   delete scroll[e]
+                            if ( e === '*'     )   scroll['*'] = []   // scroll['*'] must always exist - 'emit' relies on it
+                            else if ( scroll[e] )   delete scroll[e]
                         } // off func.
                     /**
                      * Resets all event-related data structures.
@@ -80,7 +81,7 @@ function notice () {
                     function emit () {
                             const [ e, ...args ] = arguments
                             if ( debugFlag ) {  
-                                        console.log ( `${debugHeader} Event "${e}" was triggered.`)
+                                        console.log ( `${debugHeader} Event "${String(e)}" was triggered.`)   // String() - event names can be Symbols
                                         if ( args.length > 0 ) {
                                             console.log ( 'Arguments:')
                                             console.log ( ...args )
@@ -111,8 +112,9 @@ function notice () {
                                 }
                             if ( scrollOnce[e] ) {
                                         if ( ignore.has(e) )   return
-                                        scrollOnce[e].forEach ( fn => fn(...args)   )
-                                        delete scrollOnce[e]
+                                        const onceFns = scrollOnce[e]
+                                        delete scrollOnce[e]   // Delete before the calls, so handlers can re-register with 'once'
+                                        onceFns.forEach ( fn => fn(...args)   )
                                 }
                             if ( scroll[e]     ) { 
                                         exeCallback ( e )
