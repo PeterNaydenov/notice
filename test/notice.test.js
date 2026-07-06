@@ -1,9 +1,5 @@
-"use strict"
-
 import notice from '../src/main.js'
-import { expect } from 'chai'
-
-
+import { describe, it, expect } from 'vitest'
 
 
 
@@ -17,7 +13,7 @@ it ( 'Standard event', () => {
     eBus.on ( 'note', () => result += 1 )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 2 )
+    expect ( result ).toBe ( 2 )
 }) // it standard
 
 
@@ -29,7 +25,7 @@ it ( 'Single event', () => {
     eBus.once ( 'note', () => result += 1 )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 1 )
+    expect ( result ).toBe ( 1 )
 }) // it single
 
 
@@ -41,7 +37,7 @@ it ( 'Many subscribers for single event', () => {
     eBus.once ( 'note', () => result += 3 )
     eBus.emit ( 'note'  )
     eBus.emit ( 'note'  )
-    expect ( result ).to.be.equal ( 4 )
+    expect ( result ).toBe ( 4 )
 }) // it single
 
 
@@ -52,7 +48,7 @@ it ( 'Remove standard event', () => {
     eBus.on   ( 'note', () => result += 1 )
     eBus.off ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
 }) // it remove std event
 
 
@@ -64,7 +60,7 @@ it ( 'Remove single event', () => {
     eBus.once ( 'note', () => result += 1 )
     eBus.off ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
 }) // it remove single event
 
 
@@ -79,7 +75,7 @@ it ( 'Reset the emitter', () => {
     eBus.reset ()
     eBus.emit ( 'note' )
     eBus.emit ( 'boom' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
 }) // it reset the emitter
 
 
@@ -90,10 +86,10 @@ it ( 'Stop and resume standard event', () => {
     eBus.on ( 'note', () => result += 1 )
     eBus.stop ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
     eBus.start ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 1 )
+    expect ( result ).toBe ( 1 )
 }) // it stop and resume std event
 
 
@@ -106,12 +102,12 @@ it ( 'Stop and resume single event', () => {
     eBus.once ( 'note', () => result += 1 )
     eBus.stop ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
     eBus.start ( 'note' )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 1 )
+    expect ( result ).toBe ( 1 )
 }) // it stop and resume single event
 
 
@@ -123,7 +119,7 @@ it ( 'Emit with wildcard', () => {
     eBus.on ( 'second', () => result+= 3 )
 
     eBus.emit ( '*' )
-    expect ( result ).to.be.equal ( 4 )
+    expect ( result ).toBe ( 4 )
 }) // it emit with wildcard
 
 
@@ -138,14 +134,14 @@ it ( 'Listen with wildcard', () => {
     eBus.on ( 'first'  , () => result+=1  )
     eBus.on ( 'second', () => result+= 3 )
     eBus.on ( '*'     , e => {
-                            expect (['first','second']).to.include ( e )
+                            expect (['first','second']).toContain ( e )
                             count++    
                     })
 
     eBus.emit ( 'first' )
     eBus.emit ( 'second' )
-    expect ( result ).to.be.equal ( 4 )
-    expect ( count ).to.be.equal ( 2 )
+    expect ( result ).toBe ( 4 )
+    expect ( count ).toBe ( 2 )
 }) // it listen with wildcard
 
 
@@ -157,11 +153,11 @@ it ( 'Listen and emit with wildcard', () => {
     eBus.on ( 'first'  , () => result+=1  )
     eBus.on ( 'second', () => result+= 3 )
     eBus.on ( '*'     , e => {
-                            expect (e).to.be.equal ( '*' )
+                            expect (e).toBe ( '*' )
                             result+=10 
                     })
     eBus.emit ( '*' )
-    expect ( result ).to.be.equal ( 24 )
+    expect ( result ).toBe ( 24 )
 }) // it listen and emit with wildcard
 
 
@@ -176,11 +172,11 @@ it ( 'Stop and start with wildcard', () => {
     eBus.stop ( '*' )
     eBus.emit ( 'first' )
     eBus.emit ( 'second' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
     eBus.start ( '*' )
     eBus.emit ( 'first' )
     eBus.emit ( 'second' )
-    expect ( result ).to.be.equal ( 4 )
+    expect ( result ).toBe ( 4 )
 }) // it stop with wildcard
 
 
@@ -194,7 +190,7 @@ it ( 'Wildcard with a stopped event', () => {
 
     eBus.stop ( 'second' )
     eBus.emit ( '*' )
-    expect ( result ).to.be.equal ( 1 )
+    expect ( result ).toBe ( 1 )
 
 }) // it wildcard with stopped event
 
@@ -217,7 +213,7 @@ it ( 'Unsubscribe a function', () => {
     eBus.emit ( 'note' )
     eBus.off  ( 'note', fn2  )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 8 )
+    expect ( result ).toBe ( 8 )
 }) // it unsibsribe a function
 
 
@@ -236,7 +232,7 @@ it ( 'Unsubscribe a single function', () => {
     eBus.off  ( 'note' , fn3 )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
 }) // it unsibsribe a function
 
 
@@ -251,7 +247,7 @@ it ( 'Unsubscribe all functions for the event', () => {
     eBus.off ( 'note' , fn3 )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 0 )
+    expect ( result ).toBe ( 0 )
 }) // it unsibsribe a function
 
 
@@ -270,14 +266,14 @@ it ( 'Unsubscribe a function from non existing event', () => {
     eBus.off ( 'non'  , fn1 )
     eBus.emit ( 'note' )
     eBus.emit ( 'note' )
-    expect ( result ).to.be.equal ( 40 )
+    expect ( result ).toBe ( 40 )
 }) // it unsibsribe a function
 
 
 
 it ( 'Event with primitive data', () => {
     const eBus = notice ();
-    eBus.on  ( 'note' , a => expect (a).to.be.equal ( 12 )   )    
+    eBus.on  ( 'note' , a => expect (a).toBe ( 12 )   )    
     eBus.emit ( 'note', 12 )
 }) // it Event with primitive data
 
@@ -285,7 +281,7 @@ it ( 'Event with primitive data', () => {
 
 it ( 'Event with object', () => {
     const eBus = notice ();
-    eBus.on  ( 'note' , a => expect ( a['val'] ).to.be.equal ( 12 )   )    
+    eBus.on  ( 'note' , a => expect ( a['val'] ).toBe ( 12 )   )    
     eBus.emit ( 'note', {val:12} )
 }) // it Event with primitive data
 
@@ -294,8 +290,8 @@ it ( 'Event with object', () => {
 it ( 'Event with two values', () => {
     const eBus = notice ();
     eBus.on  ( 'note' , (str,a) => {
-                    expect ( str ).to.be.equal ( 'test' )
-                    expect (a.val).to.be.equal ( 12 )
+                    expect ( str ).toBe ( 'test' )
+                    expect (a.val).toBe ( 12 )
                 })    
     eBus.emit ( 'note', 'test', {val:12} )
 }) // it Event with primitive data
@@ -308,8 +304,8 @@ it ( 'Multiple Notice instances', () => {
        , eBus2 = notice ()
        ;
 
-    eBus1.on ( 'test', x => expect ( x ).to.be.equal ( 12 )   )
-    eBus2.on ( 'test', x => expect ( x ).to.be.equal ( 73 )   )
+    eBus1.on ( 'test', x => expect ( x ).toBe ( 12 )   )
+    eBus2.on ( 'test', x => expect ( x ).toBe ( 73 )   )
     eBus1.emit ( 'test', 12 )
     eBus2.emit ( 'test', 73 )
 }) // it Multiple Notice instances
@@ -332,7 +328,7 @@ it ( 'Stop execution of the subscriber list on condition', () => {
          *  prevent the execution if the conditions are not met.
          */
         eBus.emit ( 'note' )
-        expect ( x ).to.be.equal ( 1 )
+        expect ( x ).toBe ( 1 )
 }) // it stop execution of the subscriber list on condition
 
 
@@ -344,11 +340,9 @@ it ( 'Stop execution of the subscriber list on condition with wildcard', () => {
         eBus.on ( '*', () => x++ )
         
         eBus.emit ( 'note' )
-        expect ( x ).to.be.equal ( 0 )
+        expect ( x ).toBe ( 0 )
 }) // it stop execution of the subscriber list on condition with wildcard
 
 
 
 }) // define
-
-
