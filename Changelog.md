@@ -1,6 +1,14 @@
 # Release History
 
 
+### 2.4.3 ( 2026-07-07 )
+- [x] Fix: Removing the last 'once' subscriber with 'off' deletes the regular subscribers of the event;
+- [x] Fix: Removing the last wildcard listener breaks 'emit';
+- [x] Fix: 'Once' subscriber that re-registers itself during 'emit' is lost;
+- [x] Fix: Debug mode crashes on Symbol event names;
+
+
+
 ### 2.4.2 ( 2026-04-02 )
 - [x] Dependencies and devDependencies updates;
 
