@@ -1,5 +1,5 @@
 import notice from '../src/main.js'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 
 
 
@@ -39,6 +39,24 @@ it ( 'Many subscribers for single event', () => {
     eBus.emit ( 'note'  )
     expect ( result ).toBe ( 4 )
 }) // it single
+
+
+it ( 'Single event can re-register itself', () => {
+    const eBus = notice ();
+    let result = 0;
+
+    const fn = () => {
+                result += 1
+                eBus.once ( 'note', fn )   // Re-register for the next emit
+        }
+
+    eBus.once ( 'note', fn )
+    eBus.emit ( 'note' )
+    eBus.emit ( 'note' )
+    eBus.emit ( 'note' )
+    expect ( result ).toBe ( 3 )
+}) // it single event can re-register itself
+
 
 
 it ( 'Remove standard event', () => {
@@ -162,6 +180,26 @@ it ( 'Listen and emit with wildcard', () => {
 
 
 
+it ( 'Unsubscribe wildcard listeners keeps emitter working', () => {
+    const eBus = notice ();
+    let result = 0;
+
+    const wild = () => result += 10;
+
+    eBus.on  ( '*'   , wild )
+    eBus.off ( '*'   , wild )   // Removing the last wildcard listener should not break 'emit'
+    eBus.on  ( 'note', () => result += 1 )
+    eBus.emit ( 'note' )
+    expect ( result ).toBe ( 1 )
+
+    eBus.on  ( '*', wild )
+    eBus.off ( '*' )            // Removing all wildcard listeners should not break 'emit' either
+    eBus.emit ( 'note' )
+    expect ( result ).toBe ( 2 )
+}) // it unsubscribe wildcard listeners keeps emitter working
+
+
+
 it ( 'Stop and start with wildcard', () => {
     const eBus = notice ();
     let result = 0;
@@ -237,6 +275,25 @@ it ( 'Unsubscribe a single function', () => {
 
 
 
+it ( 'Unsubscribe last single function keeps standard subscribers', () => {
+    const eBus = notice ();
+    let result = 0;
+
+    const
+          fn1 = () => result += 1
+        , fn2 = () => result += 3
+        ;
+
+    eBus.on   ( 'note' , fn1 )
+    eBus.once ( 'note' , fn2 )
+    eBus.off  ( 'note' , fn2 )   // Removing the last single subscriber should not affect standard subscribers
+    eBus.emit ( 'note' )
+    eBus.emit ( 'note' )
+    expect ( result ).toBe ( 2 )
+}) // it unsubscribe last single function keeps standard subscribers
+
+
+
 it ( 'Unsubscribe all functions for the event', () => {
     const eBus = notice ();
     let result = 0;
@@ -295,6 +352,21 @@ it ( 'Event with two values', () => {
                 })    
     eBus.emit ( 'note', 'test', {val:12} )
 }) // it Event with primitive data
+
+
+
+it ( 'Debug mode with Symbol event name', () => {
+    const eBus = notice ();
+    const SYM = Symbol ( 'note' );
+    let result = 0;
+
+    const logSpy = vi.spyOn ( console, 'log' ).mockImplementation ( () => {} )
+    eBus.debug ( true, '[test]' )
+    eBus.on ( SYM, () => result += 1 )
+    eBus.emit ( SYM )
+    logSpy.mockRestore ()
+    expect ( result ).toBe ( 1 )
+}) // it debug mode with Symbol event name
 
 
 
