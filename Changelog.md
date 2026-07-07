@@ -1,11 +1,19 @@
 # Release History
 
 
+### 2.4.4 ( 2026-07-07 )
+- [x] Fix: Wildcard listeners are not notified for 'once' events;
+- [x] Fix: Symbol events are invisible for wildcard 'emit' and 'stop';
+- [x] Fix: Reserved object property names ( '__proto__', 'constructor' ) can not be used as event names;
+
+
+
 ### 2.4.3 ( 2026-07-07 )
 - [x] Fix: Removing the last 'once' subscriber with 'off' deletes the regular subscribers of the event;
 - [x] Fix: Removing the last wildcard listener breaks 'emit';
 - [x] Fix: 'Once' subscriber that re-registers itself during 'emit' is lost;
 - [x] Fix: Debug mode crashes on Symbol event names;
+
 
 
 
