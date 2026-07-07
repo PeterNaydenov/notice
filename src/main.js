@@ -1,9 +1,9 @@
 "use strict"
 function notice () {
     
-                    let 
-                          scroll     = {'*':[]}  // General events with their subscribers
-                        , scrollOnce = {}  // Single events with their subscribers
+                    let
+                          scroll     = Object.assign ( Object.create(null), {'*':[]} )  // General events with their subscribers. Null prototype - event names like '__proto__' are safe
+                        , scrollOnce = Object.create ( null )  // Single events with their subscribers
                         , ignore     = new Set ()  // Ignore event names ( general and single )
                         , debugFlag  = false 
                         , debugHeader = ''
@@ -55,8 +55,8 @@ function notice () {
                      * Clears all general and single event subscriptions, as well as the ignore list.
                      */
                     function reset () {
-                            scroll     = {'*':[]}
-                            scrollOnce = {}
+                            scroll     = Object.assign ( Object.create(null), {'*':[]} )
+                            scrollOnce = Object.create ( null )
                             ignore     = new Set ()
                         } // reset func.
                     /**
@@ -106,7 +106,7 @@ function notice () {
                                 } // exeCallback func.
 
                             if ( e === '*' ) {   // The wildcard '*' doesn't work for 'once' events
-                                        let evNames = Object.keys ( scroll )
+                                        let evNames = Reflect.ownKeys ( scroll )   // Reflect.ownKeys - event names can be Symbols
                                         evNames.forEach ( name => exeCallback(name)   )
                                         return
                                 }
@@ -115,6 +115,7 @@ function notice () {
                                         const onceFns = scrollOnce[e]
                                         delete scrollOnce[e]   // Delete before the calls, so handlers can re-register with 'once'
                                         onceFns.forEach ( fn => fn(...args)   )
+                                        if ( !scroll[e] )   scroll['*'].forEach ( fn => fn(e,...args)  )   // Notify wildcard listeners; if regular subscribers exist, 'exeCallback' will do it
                                 }
                             if ( scroll[e]     ) { 
                                         exeCallback ( e )
@@ -141,9 +142,9 @@ function notice () {
                      */
                     function stop ( e ) {
                             if ( e === '*' ) {
-                                        const 
-                                              evNames     = Object.keys ( scroll )
-                                            , evOnceNames = Object.keys ( scrollOnce )
+                                        const
+                                              evNames     = Reflect.ownKeys ( scroll )   // Reflect.ownKeys - event names can be Symbols
+                                            , evOnceNames = Reflect.ownKeys ( scrollOnce )
                                             ;
                                         ignore = new Set ([ ...evOnceNames, ...evNames ])
                                         return
