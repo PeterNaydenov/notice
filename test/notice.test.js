@@ -180,6 +180,58 @@ it ( 'Listen and emit with wildcard', () => {
 
 
 
+it ( 'Wildcard listener hears single events', () => {
+    const eBus = notice ();
+    let heard = [];
+
+    eBus.on   ( '*', e => heard.push ( e )   )
+    eBus.on   ( 'regular', () => {} )
+    eBus.once ( 'single' , () => {} )
+    eBus.emit ( 'regular' )
+    eBus.emit ( 'single' )
+    expect ( heard ).toEqual ([ 'regular', 'single' ])
+
+    eBus.on   ( 'both', () => {} )   // Event with both types of subscribers should notify the wildcard only once
+    eBus.once ( 'both', () => {} )
+    eBus.emit ( 'both' )
+    expect ( heard ).toEqual ([ 'regular', 'single', 'both' ])
+}) // it wildcard listener hears single events
+
+
+
+it ( 'Symbol event with wildcard emit and stop', () => {
+    const eBus = notice ();
+    const SYM = Symbol ( 'note' );
+    let result = 0;
+
+    eBus.on ( SYM, () => result += 1 )
+    eBus.emit ( '*' )
+    expect ( result ).toBe ( 1 )
+
+    eBus.stop ( '*' )
+    eBus.emit ( SYM )
+    expect ( result ).toBe ( 1 )
+
+    eBus.start ( '*' )
+    eBus.emit ( SYM )
+    expect ( result ).toBe ( 2 )
+}) // it symbol event with wildcard emit and stop
+
+
+
+it ( 'Reserved object keys as event names', () => {
+    const eBus = notice ();
+    let result = 0;
+
+    eBus.on ( '__proto__'  , () => result += 1 )
+    eBus.on ( 'constructor', () => result += 3 )
+    eBus.emit ( '__proto__' )
+    eBus.emit ( 'constructor' )
+    expect ( result ).toBe ( 4 )
+}) // it reserved object keys as event names
+
+
+
 it ( 'Unsubscribe wildcard listeners keeps emitter working', () => {
     const eBus = notice ();
     let result = 0;
