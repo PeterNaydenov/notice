@@ -1,10 +1,16 @@
 # Release History
 
 
+### 2.4.5 ( 2026-07-08 )
+- [x] Fix: Build was not updated;
+
+
+
 ### 2.4.4 ( 2026-07-07 )
 - [x] Fix: Wildcard listeners are not notified for 'once' events;
 - [x] Fix: Symbol events are invisible for wildcard 'emit' and 'stop';
 - [x] Fix: Reserved object property names ( '__proto__', 'constructor' ) can not be used as event names;
+- [x] Bug: Build was not updated;
 
 
 
