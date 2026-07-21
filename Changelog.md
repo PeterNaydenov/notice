@@ -1,6 +1,15 @@
 # Release History
 
 
+### 2.5.0 ( 2026-07-21 )
+- [x] Fix: a throwing subscriber used to abort the whole `emit()` chain and propagate the error to the caller, silently skipping every subscriber registered after the failing one. Each subscriber call is now wrapped in try/catch, errors are logged to `console.error`, and `emit` continues. (This is a behavior change — callers that relied on `emit` re-throwing a subscriber's error must handle it themselves, e.g. via their own wrapping);
+- [x] Change: `on()` and `once()` silently no-op when `fn` is not a function. Previously they stored the value as-is and threw `'fn is not a function'` at `emit` time, far from the bug site. Defensive use (passing a possibly-undefined handler) is preserved;
+- [x] Cleanup: removed unreachable-looking `if (name === '*') return` from `exeCallback` was actually load-bearing (it prevents `emit('*')` from double-firing the wildcard when iterating `Reflect.ownKeys(scroll)`). Kept the check, rewrote the comment to explain why;
+- [x] Cleanup: removed stale `external: ['ms']` from `rollup.config.js`. `ms` is not a dep and not imported anywhere — leftover from a previous setup;
+- [x] Docs: README "Last Updates" section now covers 2.4.0–2.4.5 (Symbol event names, reserved `__proto__` / `constructor` keys, wildcard + Symbol combinations, `once` re-registration interaction with `off`, debug mode with Symbol event names, etc.);
+
+
+
 ### 2.4.5 ( 2026-07-08 )
 - [x] Fix: Build was not updated;
 
