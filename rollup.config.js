@@ -13,9 +13,9 @@ export default [
 			format: 'umd'
 		},
 		plugins: [
-			resolve(), // so Rollup can find `ms`
-			commonjs() // so Rollup can convert `ms` to an ES module
-			, terser()
+			resolve(),    // so Rollup can find dependencies
+			commonjs(),   // convert any CJS deps to ESM
+			terser()
 		]
 	},
 
@@ -27,7 +27,6 @@ export default [
 	// `file` and `format` for each target)
 	{
 		input: 'src/main.js',
-		external: ['ms'],
 		output: [
 			{ file: 'dist/notice.cjs'    , format: 'cjs' },
 			{ file: 'dist/notice.esm.mjs', format: 'es' }
