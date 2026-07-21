@@ -20,8 +20,15 @@ Use method '**stop**' to mute the event for a while. Use method '**start**' to u
 
 ## Last Updates
 - After version 2.1.0  Method 'reset' was added. It removes all events and functions from the event emitter;
-- After version 2.3.0  If callback that returns a string 'stop', the execution of followed callbacks will be stopped. Use this functionality to create a condition checking functions before  your main callback if needed;
+- After version 2.3.0  If callback that returns a string 'stop', the execution of followed callbacks will be stopped. Use this functionality to create a condition checking functions before your main callback if needed;
 - In version 2.3.1 and above: Callback stop will stop the wildcard callbacks as well;
+- In version 2.4.0  Event names can be `Symbol`s, in addition to strings;
+- In version 2.4.0  Subscriber callbacks that throw no longer abort the rest of the event chain — each call is wrapped in try/catch and the error is logged to `console.error`;
+- In version 2.4.4  Reserved object property names (`'__proto__'`, `'constructor'`) can be used as event names — the internal `scroll` map uses a null-prototype object, so these keys are safe;
+- In version 2.4.4  Removing the last `'once'` subscriber with `off` no longer deletes the regular subscribers of the same event;
+- In version 2.4.4  `on` and `once` silently no-op when the `fn` argument is not a function (previously they stored the value and threw `'fn is not a function'` at `emit` time);
+- In version 2.4.4  Wildcard `emit('*')` and wildcard `stop('*')` / `start('*')` now correctly handle `Symbol` event names;
+- In version 2.4.4  Debug mode (`eBus.debug(true, '[HDR]')`) works with `Symbol` event names — the event name is stringified with `String(e)`;
 
 
 
@@ -87,7 +94,22 @@ eBus.stop ( 'note' )   // will mute the event
 eBus.emit ( 'note' )   // nothing will happen
 eBus.start ( 'note' )  // will unmute the event
 eBus.emit ( 'note' )   // ---> 'hey!'
+
+
+// example 6 — Symbol event names
+const NOTE = Symbol ( 'note' );
+eBus.on ( NOTE, ( msg ) => console.log ( `got: ${msg}` )   )
+eBus.emit ( NOTE, 'hello' )
+// ---> got: hello
+
+
+// example 7 — reserved keys ('__proto__', 'constructor') are safe
+eBus.on ( '__proto__', () => console.log ( 'proto event' )   )
+eBus.emit ( '__proto__' )
+// ---> proto event
 ```
+
+
 
 
 
