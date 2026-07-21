@@ -460,12 +460,158 @@ it ( 'Stop execution of the subscriber list on condition with wildcard', () => {
         const eBus = notice ();
         let x = 0;
         eBus.on ( 'note', () => 'STOP' ) // First subscriber returns 'STOP' and stops the execution of the rest of the subscribers, including the wildcard
-        eBus.on ( 'note', () => x++ ) 
+        eBus.on ( 'note', () => x++ )
         eBus.on ( '*', () => x++ )
-        
+
         eBus.emit ( 'note' )
         expect ( x ).toBe ( 0 )
 }) // it stop execution of the subscriber list on condition with wildcard
+
+
+
+
+// ============================================================================
+// Regression: a throwing subscriber used to abort the whole `emit()` chain
+// and propagate the error to the caller, silently skipping every subscriber
+// registered after the failing one. Each subscriber call is now wrapped in
+// try/catch, errors are logged to `console.error`, and `emit` continues.
+// ============================================================================
+
+describe ( 'Subcriber error isolation', () => {
+
+    it ( 'a throwing subscriber does not abort the rest of the chain', () => {
+        const eBus = notice ()
+        let firstRan  = false
+        let thirdRan  = false
+        const errorSpy = vi.spyOn ( console, 'error' ).mockImplementation ( () => {} )
+
+        eBus.on ( 'note', () => { firstRan = true } )
+        eBus.on ( 'note', () => { throw new Error ( 'boom' ) } )
+        eBus.on ( 'note', () => { thirdRan = true } )
+
+        eBus.emit ( 'note' )     // must not throw
+
+        expect ( firstRan ).toBe ( true )
+        expect ( thirdRan ).toBe ( true )
+        expect ( errorSpy ).toHaveBeenCalled ()
+        errorSpy.mockRestore ()
+    })
+
+
+    it ( 'a throwing once() subscriber does not abort the chain', () => {
+        const eBus = notice ()
+        let result = 0
+        const errorSpy = vi.spyOn ( console, 'error' ).mockImplementation ( () => {} )
+
+        eBus.once ( 'note', () => { throw new Error ( 'boom' ) } )
+        eBus.on   ( 'note', () => result++ )
+
+        eBus.emit ( 'note' )
+        eBus.emit ( 'note' )
+
+        expect ( result ).toBe ( 2 )   // both emits ran the regular subscriber
+        errorSpy.mockRestore ()
+    })
+
+
+    it ( 'a throwing wildcard subscriber does not abort the rest of the chain', () => {
+        const eBus = notice ()
+        let result = 0
+        const errorSpy = vi.spyOn ( console, 'error' ).mockImplementation ( () => {} )
+
+        eBus.on ( 'note', () => result++ )
+        eBus.on ( '*'   , () => { throw new Error ( 'wildcard boom' ) } )
+        eBus.on ( 'note', () => result += 10 )
+
+        eBus.emit ( 'note' )   // must not throw
+
+        expect ( result ).toBe ( 11 )
+        errorSpy.mockRestore ()
+    })
+
+
+    it ( 'STOP still works after a throwing subscriber', () => {
+        const eBus = notice ()
+        let x = 0
+        const errorSpy = vi.spyOn ( console, 'error' ).mockImplementation ( () => {} )
+
+        eBus.on ( 'note', () => { throw new Error ( 'boom' ) } )   // logged + skipped
+        eBus.on ( 'note', () => 'STOP' )                              // halts the chain
+        eBus.on ( 'note', () => x++ )                                 // never called
+
+        eBus.emit ( 'note' )
+
+        expect ( x ).toBe ( 0 )
+        errorSpy.mockRestore ()
+    })
+
+}) // describe subscriber error isolation
+
+
+
+
+// ============================================================================
+// Regression: `on` and `once` used to silently store non-function values
+// (e.g. `eBus.on('note')` with no second arg, or a typo), then throw
+// `'fn is not a function'` at `emit` time — far from the bug site and
+// confusing. They now silently no-op so the bad call is a no-op (no
+// throw, no storage, no future `'fn is not a function'`).
+// ============================================================================
+
+describe ( 'on / once input validation', () => {
+
+    it ( 'on() with no fn argument is a silent no-op', () => {
+        const eBus = notice ()
+        let result = 0
+
+        expect ( () => eBus.on ( 'note' ) ).to.not.throw ()
+        eBus.on ( 'note', () => result++ )
+
+        eBus.emit ( 'note' )   // no throw, regular subscriber fires
+
+        expect ( result ).toBe ( 1 )
+    })
+
+
+    it ( 'on() with a non-function fn is a silent no-op', () => {
+        const eBus = notice ()
+        let result = 0
+
+        expect ( () => eBus.on ( 'note', 'not a function' ) ).to.not.throw ()
+        eBus.on ( 'note', () => result++ )
+
+        eBus.emit ( 'note' )   // no "'fn is not a function'" thrown at emit
+
+        expect ( result ).toBe ( 1 )
+    })
+
+
+    it ( 'once() with no fn argument is a silent no-op', () => {
+        const eBus = notice ()
+        let result = 0
+
+        expect ( () => eBus.once ( 'note' ) ).to.not.throw ()
+        eBus.on   ( 'note', () => result++ )
+
+        eBus.emit ( 'note' )
+
+        expect ( result ).toBe ( 1 )
+    })
+
+
+    it ( 'once() with a non-function fn is a silent no-op', () => {
+        const eBus = notice ()
+        let result = 0
+
+        expect ( () => eBus.once ( 'note', 42 ) ).to.not.throw ()
+        eBus.on   ( 'note', () => result++ )
+
+        eBus.emit ( 'note' )
+
+        expect ( result ).toBe ( 1 )
+    })
+
+}) // describe on / once input validation
 
 
 
