@@ -15,6 +15,7 @@ function notice () {
                      *  @returns void
                      */
                     function on ( e, fn ) {
+                            if ( typeof fn !== 'function' )   return   // Silently no-op on bad input — see Changelog
                             if ( !scroll[e] ) scroll[e] = []
                             scroll[e].push ( fn )
                         } // on func.
@@ -26,6 +27,7 @@ function notice () {
                      */
                     function once ( e, fn ) {
                             if ( e === '*' )   return  // The wildcard '*' doesn't work for 'once' events
+                            if ( typeof fn !== 'function' )   return   // Silently no-op on bad input — see Changelog
                             if ( !scrollOnce[e] )   scrollOnce[e] = []
                             scrollOnce[e].push ( fn )
                         } // once func.
@@ -73,14 +75,18 @@ function notice () {
                         } // debug func.
                     /**
                      * Triggers an event and executes all associated functions.
-                     * 
+                     *
+                     * Exceptions thrown by individual subscribers are caught and
+                     * logged to `console.error` so that one misbehaving callback does
+                     * not abort the rest of the chain. The `STOP` return-string
+                     * contract is unchanged.
+                     *
                      * @param {string|Symbol} e - Name of the event to be triggered.
                      * @param {...*} [args] - Optional. Arguments to be passed to the callback functions.
                      * @returns void
                      */
-                    function emit () {
-                            const [ e, ...args ] = arguments
-                            if ( debugFlag ) {  
+                    function emit ( e, ...args ) {
+                            if ( debugFlag ) {
                                         console.log ( `${debugHeader} Event "${String(e)}" was triggered.`)   // String() - event names can be Symbols
                                         if ( args.length > 0 ) {
                                             console.log ( 'Arguments:')
@@ -89,20 +95,28 @@ function notice () {
                                         }
                                 }
 
+                            function safeCall ( fn, callArgs ) {
+                                        try   { return fn ( ...callArgs ) }
+                                        catch ( err ) {
+                                                console.error ( 'notice: subscriber threw —', err )
+                                                return undefined
+                                            }
+                                    } // safeCall func.
+
                             function exeCallback ( name ) {
                                         let stopped = false;
-                                        if ( name === '*' )   return
+                                        if ( name === '*' )   return   // 'emit("*")' iterates Reflect.ownKeys(scroll) which includes '*'; skip the meta-loop to avoid double-firing the wildcard
                                         if ( ignore.has(name) )   return
                                         scroll[name].every ( fn => {
-                                                            const r = fn ( ...args );
-                                                            if ( typeof(r) !== 'string'     )   return true
-                                                            if ( r.toUpperCase() === 'STOP' ) {  
+                                                            const r = safeCall ( fn, args )
+                                                            if ( typeof(r) !== 'string' )   return true
+                                                            if ( r.toUpperCase() === 'STOP' ) {
                                                                                                 stopped = true
                                                                                                 return false
                                                                                     }
                                                             return true
                                                         })
-                                        if ( !stopped )   scroll['*'].forEach ( fn => fn(e,...args)  )
+                                        if ( !stopped )   scroll['*'].forEach ( fn => safeCall ( fn, [e, ...args] )  )
                                 } // exeCallback func.
 
                             if ( e === '*' ) {   // The wildcard '*' doesn't work for 'once' events
@@ -114,10 +128,10 @@ function notice () {
                                         if ( ignore.has(e) )   return
                                         const onceFns = scrollOnce[e]
                                         delete scrollOnce[e]   // Delete before the calls, so handlers can re-register with 'once'
-                                        onceFns.forEach ( fn => fn(...args)   )
-                                        if ( !scroll[e] )   scroll['*'].forEach ( fn => fn(e,...args)  )   // Notify wildcard listeners; if regular subscribers exist, 'exeCallback' will do it
+                                        onceFns.forEach ( fn => safeCall ( fn, args )   )
+                                        if ( !scroll[e] )   scroll['*'].forEach ( fn => safeCall ( fn, [e, ...args] )  )   // Notify wildcard listeners; if regular subscribers exist, 'exeCallback' will do it
                                 }
-                            if ( scroll[e]     ) { 
+                            if ( scroll[e]     ) {
                                         exeCallback ( e )
                                 }
                         } // emit func.
