@@ -1,6 +1,12 @@
 # Release History
 
 
+### 2.6.0 ( 2026-09-03 )
+- [x] Feature: Added a skill at `/skills/git-notice/SKILL.md`;
+- [x] Dev dependencies updates. Vitest@5.0.0;
+
+
+
 ### 2.5.0 ( 2026-07-21 )
 - [x] Fix: a throwing subscriber used to abort the whole `emit()` chain and propagate the error to the caller, silently skipping every subscriber registered after the failing one. Each subscriber call is now wrapped in try/catch, errors are logged to `console.error`, and `emit` continues. (This is a behavior change — callers that relied on `emit` re-throwing a subscriber's error must handle it themselves, e.g. via their own wrapping);
 - [x] Change: `on()` and `once()` silently no-op when `fn` is not a function. Previously they stored the value as-is and threw `'fn is not a function'` at `emit` time, far from the bug site. Defensive use (passing a possibly-undefined handler) is preserved;
