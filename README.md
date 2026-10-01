@@ -13,7 +13,7 @@
 
 
 `Notice` is an simple event emitter. Define a behaviour related to event and then trigger the event.  
-Register multiple callbacks to the same event. Order of execution is the same as the order of registration.
+Register multiple callbacks to the same event. Once callbacks run first, followed by regular callbacks, then wildcard callbacks. Within each group, callbacks run in registration order.
 Use method '**stop**' to mute the event for a while. Use method '**start**' to unmute the event. Method '**off**' will remove the event and all related callbacks. Method 'reset' will remove all events and functions from the event emitter.
 
 
@@ -23,10 +23,10 @@ Use method '**stop**' to mute the event for a while. Use method '**start**' to u
 - After version 2.3.0  If callback that returns a string 'stop', the execution of followed callbacks will be stopped. Use this functionality to create a condition checking functions before your main callback if needed;
 - In version 2.3.1 and above: Callback stop will stop the wildcard callbacks as well;
 - In version 2.4.0  Event names can be `Symbol`s, in addition to strings;
-- In version 2.4.0  Subscriber callbacks that throw no longer abort the rest of the event chain — each call is wrapped in try/catch and the error is logged to `console.error`;
+- In version 2.5.0  Subscriber callbacks that throw no longer abort the rest of the event chain — each call is wrapped in try/catch and the error is logged to `console.error`;
 - In version 2.4.4  Reserved object property names (`'__proto__'`, `'constructor'`) can be used as event names — the internal `scroll` map uses a null-prototype object, so these keys are safe;
 - In version 2.4.4  Removing the last `'once'` subscriber with `off` no longer deletes the regular subscribers of the same event;
-- In version 2.4.4  `on` and `once` silently no-op when the `fn` argument is not a function (previously they stored the value and threw `'fn is not a function'` at `emit` time);
+- In version 2.5.0  `on` and `once` silently no-op when the `fn` argument is not a function (previously they stored the value and threw `'fn is not a function'` at `emit` time);
 - In version 2.4.4  Wildcard `emit('*')` and wildcard `stop('*')` / `start('*')` now correctly handle `Symbol` event names;
 - In version 2.4.4  Debug mode (`eBus.debug(true, '[HDR]')`) works with `Symbol` event names — the event name is stringified with `String(e)`;
 
@@ -132,7 +132,7 @@ eBus.emit ( '__proto__' )
 
 ### Notice.on ( eventName, fn )
 Register a regular event.
-- **eventName**: *string*. Name of the event;
+- **eventName**: *string or Symbol*. Name of the event;
 - **fn**: *function*. Behaviour that will be assigned to this eventName;
 ```js
   const eBus = notice ();
@@ -147,8 +147,8 @@ Register a regular event.
 
 
 ### Notice.once ( eventName, fn )
-Register a single event.
-- **eventName**: *string*. Name of the event;
+Register a single event. Once callbacks run before regular callbacks for the same event. `once('*', fn)` is a silent no-op.
+- **eventName**: *string or Symbol*. Name of the event;
 - **fn**: *function*. Behaviour that will be assigned to this eventName;
 ```js
 const eBus = notice ();
@@ -164,7 +164,7 @@ eBus.emit ( 'start', 'Vessy' )
 
 ### Notice.off ( eventName, fn )
 Remove a behaviour(function) related to the event. If 'fn' is not provided, all behaviours related to this event will be removed. Function works with all types of event ( regular and single )
-- **eventName**: *string*. Name of the event;
+- **eventName**: *string or Symbol*. Name of the event;
 - **fn**(optional): *function*. Behaviour that will be assigned to this eventName;
 ```js
 let result = 0;
@@ -212,10 +212,17 @@ const
 ```
 
 
-### Notice.emit ( eventName, data )
-Trigger the event and execute all subscribed functions.
-- **eventName**: *string*. Name of the event;
-- **data**(optional): *any*. 
+### Notice.emit ( eventName, ...args )
+Trigger the event synchronously. Once callbacks run first, then regular callbacks, then wildcard callbacks. Each group runs in registration order.
+
+A regular callback returning `'STOP'` (case-insensitive, including `'Stop'`) skips the remaining regular callbacks and wildcard delivery. Return values from once and wildcard callbacks are ignored. Subscriber errors are logged to `console.error`, and delivery continues.
+
+Wildcard listeners registered with `on('*', fn)` receive the event name followed by the payload arguments. They are notified only if the emitted name has regular or once subscribers. `emit('*', ...args)` visits regular event names, including Symbols, and excludes once-only events. During that broadcast, wildcard callbacks receive `'*'` for each dispatched event. If an earlier callback removes an event or resets the bus, event names that no longer exist are skipped.
+
+Subscribers appended to a list while that list is being called wait until the next delivery of that list. Removing subscribers replaces the stored list; callbacks already in the active list still finish unless a regular callback returns `STOP`.
+
+- **eventName**: *string or Symbol*. Name of the event;
+- **args**(optional): any number of payload arguments, passed through without cloning.
 
 ```js
 let result = 0;
@@ -235,8 +242,8 @@ const
 
 
 ### Notice.stop ( eventName )
-Disable specified event.
-- **eventName**: *string*. Name of the event;
+Disable specified event. `stop('*')` mutes all event names registered at that moment; newly registered names remain enabled. Use `start('*')` to clear the mute list.
+- **eventName**: *string or Symbol*. Name of the event;
 
 ```js
 let result = 0;
@@ -258,7 +265,7 @@ const
 
 ### Notice.start ( eventName )
 Enable again specified event.
-- **eventName**: *string*. Name of the event;
+- **eventName**: *string or Symbol*. Name of the event;
 
 ```js
 let result = 0;
