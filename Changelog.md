@@ -1,8 +1,18 @@
 # Release History
 
 
+
+### 2.6.1 ( 2026-10-01 )
+- [x] Fix: Wildcard dispatch skips event names removed by an earlier callback, including removal through `reset()` and Symbol event names;
+- [x] Tests: Assert callback delivery and payloads outside subscribers so error isolation cannot swallow assertion failures. Cover wildcard error continuation, nested emits, mutation during dispatch, and existing dispatch ordering;
+- [x] Cleanup: Preserve the original source indentation and once implementation, including the local subscriber error helper; keep the runtime patch limited to the broadcast guard;
+- [x] Docs: Clarify callback ordering, wildcard delivery, `STOP` behavior, and wildcard muting; correct release references for error isolation and invalid callbacks;
+- [x] Research: Add a repeatable dispatch benchmark. Wildcard argument reuse remains an experiment because gains with many listeners come with a regression in a single-listener case;
+
+
+
 ### 2.6.0 ( 2026-09-03 )
-- [x] Feature: Added a skill at `/skills/git-notice/SKILL.md`;
+- [x] Feature: Added a skill at `/skills/notice/SKILL.md`;
 - [x] Dev dependencies updates. Vitest@5.0.0;
 
 
