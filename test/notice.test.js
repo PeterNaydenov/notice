@@ -1,5 +1,7 @@
 import notice from '../src/main.js'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+
+afterEach ( () => vi.restoreAllMocks() )
 
 
 
@@ -146,20 +148,19 @@ it ( 'Listen with wildcard', () => {
     const eBus = notice ();
     let 
           result = 0
-        , count = 0
+        , heard = []
         ;
 
     eBus.on ( 'first'  , () => result+=1  )
     eBus.on ( 'second', () => result+= 3 )
     eBus.on ( '*'     , e => {
-                            expect (['first','second']).toContain ( e )
-                            count++    
+                            heard.push ( e )
                     })
 
     eBus.emit ( 'first' )
     eBus.emit ( 'second' )
     expect ( result ).toBe ( 4 )
-    expect ( count ).toBe ( 2 )
+    expect ( heard ).toEqual ([ 'first', 'second' ])
 }) // it listen with wildcard
 
 
@@ -167,15 +168,17 @@ it ( 'Listen with wildcard', () => {
 it ( 'Listen and emit with wildcard', () => {
     const eBus = notice ();
     let result = 0;
+    const heard = [];
 
     eBus.on ( 'first'  , () => result+=1  )
     eBus.on ( 'second', () => result+= 3 )
     eBus.on ( '*'     , e => {
-                            expect (e).toBe ( '*' )
-                            result+=10 
+                            heard.push ( e )
+                            result+=10
                     })
     eBus.emit ( '*' )
     expect ( result ).toBe ( 24 )
+    expect ( heard ).toEqual ([ '*', '*' ])
 }) // it listen and emit with wildcard
 
 
@@ -382,27 +385,32 @@ it ( 'Unsubscribe a function from non existing event', () => {
 
 it ( 'Event with primitive data', () => {
     const eBus = notice ();
-    eBus.on  ( 'note' , a => expect (a).toBe ( 12 )   )    
+    const subscriber = vi.fn ();
+    eBus.on ( 'note', subscriber )
     eBus.emit ( 'note', 12 )
+    expect ( subscriber.mock.calls ).toEqual ([ [12] ])
 }) // it Event with primitive data
 
 
 
 it ( 'Event with object', () => {
     const eBus = notice ();
-    eBus.on  ( 'note' , a => expect ( a['val'] ).toBe ( 12 )   )    
-    eBus.emit ( 'note', {val:12} )
+    const subscriber = vi.fn ();
+    const data = {val:12};
+    eBus.on ( 'note', subscriber )
+    eBus.emit ( 'note', data )
+    expect ( subscriber.mock.calls ).toEqual ([ [data] ])
+    expect ( subscriber.mock.calls[0][0] ).toBe ( data )
 }) // it Event with primitive data
 
 
 
 it ( 'Event with two values', () => {
     const eBus = notice ();
-    eBus.on  ( 'note' , (str,a) => {
-                    expect ( str ).toBe ( 'test' )
-                    expect (a.val).toBe ( 12 )
-                })    
+    const subscriber = vi.fn ();
+    eBus.on ( 'note', subscriber )
     eBus.emit ( 'note', 'test', {val:12} )
+    expect ( subscriber.mock.calls ).toEqual ([ ['test', {val:12}] ])
 }) // it Event with primitive data
 
 
@@ -428,10 +436,14 @@ it ( 'Multiple Notice instances', () => {
        , eBus2 = notice ()
        ;
 
-    eBus1.on ( 'test', x => expect ( x ).toBe ( 12 )   )
-    eBus2.on ( 'test', x => expect ( x ).toBe ( 73 )   )
+    const first = vi.fn ();
+    const second = vi.fn ();
+    eBus1.on ( 'test', first )
+    eBus2.on ( 'test', second )
     eBus1.emit ( 'test', 12 )
     eBus2.emit ( 'test', 73 )
+    expect ( first.mock.calls ).toEqual ([ [12] ])
+    expect ( second.mock.calls ).toEqual ([ [73] ])
 }) // it Multiple Notice instances
 
 
@@ -470,6 +482,135 @@ it ( 'Stop execution of the subscriber list on condition with wildcard', () => {
 
 
 
+describe ( 'Dispatch during subscription changes', () => {
+    it.each ([ 'off', 'reset' ]) ( 'skips events removed by %s during broadcast', method => {
+        const bus = notice ();
+        const first = vi.fn ( () => bus[method] ( 'second' ) );
+        const later = vi.fn ();
+        const remaining = vi.fn ();
+        bus.on ( 'first', first )
+        bus.on ( 'second', later )
+        bus.on ( 'third', remaining )
+
+        expect ( () => bus.emit ( '*' ) ).not.toThrow ()
+        expect ( first ).toHaveBeenCalledTimes ( 1 )
+        expect ( later ).not.toHaveBeenCalled ()
+        expect ( remaining ).toHaveBeenCalledTimes ( method === 'reset' ? 0 : 1 )
+    })
+
+    it ( 'skips a Symbol event removed before its broadcast turn', () => {
+        const bus = notice ();
+        const event = Symbol ( 'later' );
+        const later = vi.fn ();
+        bus.on ( 'first', () => bus.off ( event ) )
+        bus.on ( event, later )
+
+        expect ( () => bus.emit ( '*' ) ).not.toThrow ()
+        expect ( later ).not.toHaveBeenCalled ()
+    })
+
+    it ( 'defers regular subscribers added to their active list until the next emit', () => {
+        const bus = notice ();
+        const later = vi.fn ();
+        bus.on ( 'note', () => bus.on ( 'note', later ) )
+        bus.emit ( 'note' )
+        expect ( later ).not.toHaveBeenCalled ()
+        bus.emit ( 'note' )
+        expect ( later ).toHaveBeenCalledTimes ( 1 )
+    })
+
+    it ( 'defers wildcard subscribers added to their active list until the next emit', () => {
+        const bus = notice ();
+        const later = vi.fn ();
+        bus.on ( 'note', () => {} )
+        bus.on ( '*', () => bus.on ( '*', later ) )
+        bus.emit ( 'note' )
+        expect ( later ).not.toHaveBeenCalled ()
+        bus.emit ( 'note' )
+        expect ( later ).toHaveBeenCalledTimes ( 1 )
+    })
+
+    it.each ([ 'on', 'once' ]) ( 'keeps wildcard arguments independent during nested %s emits', method => {
+        const bus = notice ();
+        const payload = { value: 12 };
+        const heard = vi.fn ();
+        bus[method] ( 'outer', () => {} )
+        bus.on ( 'inner', () => {} )
+        bus.on ( '*', event => {
+            if ( event === 'outer' ) bus.emit ( 'inner', 73 )
+        })
+        bus.on ( '*', heard )
+        bus.emit ( 'outer', payload, 'extra' )
+        expect ( heard.mock.calls ).toEqual ([ ['inner', 73], ['outer', payload, 'extra'] ])
+        expect ( heard.mock.calls[1][1] ).toBe ( payload )
+    })
+})
+
+
+describe ( 'Dispatch contract', () => {
+    it ( 'runs once subscribers before regular subscribers', () => {
+        const bus = notice ();
+        const calls = [];
+        bus.on ( 'note', () => calls.push ( 'regular' ) )
+        bus.once ( 'note', () => calls.push ( 'once' ) )
+        bus.on ( '*', () => calls.push ( 'wildcard' ) )
+        bus.emit ( 'note' )
+        expect ( calls ).toEqual ([ 'once', 'regular', 'wildcard' ])
+    })
+
+    it ( 'accepts a mixed-case STOP from regular subscribers', () => {
+        const bus = notice ();
+        const skipped = vi.fn ();
+        bus.on ( 'note', () => 'sToP' )
+        bus.on ( 'note', skipped )
+        bus.on ( '*', skipped )
+        bus.emit ( 'note' )
+        expect ( skipped ).not.toHaveBeenCalled ()
+    })
+
+    it ( 'ignores STOP from once and wildcard subscribers', () => {
+        const bus = notice ();
+        const regular = vi.fn ();
+        const wildcard = vi.fn ();
+        bus.once ( 'note', () => 'STOP' )
+        bus.on ( 'note', regular )
+        bus.on ( '*', () => 'STOP' )
+        bus.on ( '*', wildcard )
+        bus.emit ( 'note' )
+        expect ( regular.mock.calls ).toEqual ([ [] ])
+        expect ( wildcard.mock.calls ).toEqual ([ ['note'] ])
+    })
+
+    it ( 'does not deliver unregistered names or once-only events during broadcast', () => {
+        const bus = notice ();
+        const wildcard = vi.fn ();
+        const once = vi.fn ();
+        bus.on ( '*', wildcard )
+        bus.once ( 'single', once )
+        bus.emit ( 'missing' )
+        bus.emit ( '*' )
+        expect ( wildcard ).not.toHaveBeenCalled ()
+        expect ( once ).not.toHaveBeenCalled ()
+        bus.emit ( 'single' )
+        expect ( once ).toHaveBeenCalledTimes ( 1 )
+        expect ( wildcard.mock.calls ).toEqual ([ ['single'] ])
+    })
+
+    it ( 'allows new event names after stop wildcard', () => {
+        const bus = notice ();
+        const old = vi.fn ();
+        const added = vi.fn ();
+        bus.on ( 'old', old )
+        bus.stop ( '*' )
+        bus.on ( 'new', added )
+        bus.emit ( 'old' )
+        bus.emit ( 'new' )
+        expect ( old ).not.toHaveBeenCalled ()
+        expect ( added ).toHaveBeenCalledTimes ( 1 )
+    })
+})
+
+
 // ============================================================================
 // Regression: a throwing subscriber used to abort the whole `emit()` chain
 // and propagate the error to the caller, silently skipping every subscriber
@@ -477,7 +618,7 @@ it ( 'Stop execution of the subscriber list on condition with wildcard', () => {
 // try/catch, errors are logged to `console.error`, and `emit` continues.
 // ============================================================================
 
-describe ( 'Subcriber error isolation', () => {
+describe ( 'Subscriber error isolation', () => {
 
     it ( 'a throwing subscriber does not abort the rest of the chain', () => {
         const eBus = notice ()
@@ -521,11 +662,15 @@ describe ( 'Subcriber error isolation', () => {
 
         eBus.on ( 'note', () => result++ )
         eBus.on ( '*'   , () => { throw new Error ( 'wildcard boom' ) } )
+        const laterWildcard = vi.fn ();
+        eBus.on ( '*', laterWildcard )
         eBus.on ( 'note', () => result += 10 )
 
         eBus.emit ( 'note' )   // must not throw
 
         expect ( result ).toBe ( 11 )
+        expect ( laterWildcard.mock.calls ).toEqual ([ ['note'] ])
+        expect ( errorSpy ).toHaveBeenCalledTimes ( 1 )
         errorSpy.mockRestore ()
     })
 
