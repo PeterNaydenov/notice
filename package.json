@@ -22,7 +22,8 @@
     "test": "vitest run",
     "cover": "vitest run --coverage",
     "build": "rollup -c",
-    "postbuild": "tsc -p tsconfig.json"
+    "postbuild": "tsc -p tsconfig.json",
+    "bench": "node benchmark/dispatch.js"
   },
   "repository": {
     "type": "git",
