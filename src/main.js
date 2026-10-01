@@ -1,11 +1,11 @@
 "use strict"
 function notice () {
-    
+
                     let
                           scroll     = Object.assign ( Object.create(null), {'*':[]} )  // General events with their subscribers. Null prototype - event names like '__proto__' are safe
                         , scrollOnce = Object.create ( null )  // Single events with their subscribers
                         , ignore     = new Set ()  // Ignore event names ( general and single )
-                        , debugFlag  = false 
+                        , debugFlag  = false
                         , debugHeader = ''
                         ;
                     /**
@@ -36,7 +36,7 @@ function notice () {
                      * If 'fx' is provided, only that specific function will be removed from the event.
                      * If 'fx' is not provided, all functions related to the event will be removed.
                      * Works with both regular and single events.
-                     * 
+                     *
                      * @param {string|Symbol} e - Name of the event.
                      * @param {function} [fx] - Optional. The specific function to be removed.
                      */
@@ -74,15 +74,16 @@ function notice () {
                             if ( header && (typeof header === 'string') )   debugHeader = header
                         } // debug func.
                     /**
-                     * Triggers an event and executes all associated functions.
+                     * Triggers an event synchronously. Once subscribers run before regular
+                     * subscribers, followed by wildcard subscribers.
                      *
-                     * Exceptions thrown by individual subscribers are caught and
-                     * logged to `console.error` so that one misbehaving callback does
-                     * not abort the rest of the chain. The `STOP` return-string
-                     * contract is unchanged.
+                     * Subscriber exceptions are logged to console.error and do not abort
+                     * dispatch. A case-insensitive 'STOP' return from a regular subscriber
+                     * skips the remaining regular subscribers and wildcard delivery.
+                     * Return values from once and wildcard subscribers are ignored.
                      *
                      * @param {string|Symbol} e - Name of the event to be triggered.
-                     * @param {...*} [args] - Optional. Arguments to be passed to the callback functions.
+                     * @param {...*} [args] - Arguments to be passed to the subscribers.
                      * @returns void
                      */
                     function emit ( e, ...args ) {
@@ -107,6 +108,7 @@ function notice () {
                                         let stopped = false;
                                         if ( name === '*' )   return   // 'emit("*")' iterates Reflect.ownKeys(scroll) which includes '*'; skip the meta-loop to avoid double-firing the wildcard
                                         if ( ignore.has(name) )   return
+                                        if ( !scroll[name] )   return   // An earlier broadcast callback may have removed this event or reset the bus
                                         scroll[name].every ( fn => {
                                                             const r = safeCall ( fn, args )
                                                             if ( typeof(r) !== 'string' )   return true
@@ -137,12 +139,12 @@ function notice () {
                         } // emit func.
                     /**
                      * Enables again specified event.
-                     * 
+                     *
                      * @param {string|Symbol} e - Name of the event to be enabled again; the wildcard '*' is supported.
                      * @returns void
                      */
                     function start ( e ) {
-                            if ( e === '*' ) {  
+                            if ( e === '*' ) {
                                         ignore.clear ()
                                         return
                                 }
@@ -150,7 +152,7 @@ function notice () {
                         } // start func.
                     /**
                      * Temporarily disables specified event.
-                     * 
+                     *
                      * @param {string|Symbol} e - Name of the event to be disabled; the wildcard '*' is supported.
                      * @returns void
                      */
@@ -168,7 +170,7 @@ function notice () {
 
                     return {
                                   on    // Register a event
-                                , once  // Register a single event 
+                                , once  // Register a single event
                                 , off   // Unregister regular and single events
                                 , reset // Unregister all events
                                 , emit  // Trigger a event
