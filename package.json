@@ -1,16 +1,29 @@
 {
   "name": "@peter.naydenov/notice",
-  "description": "Event emmiter - NOTICE",
-  "version": "2.6.1",
+  "description": "Event emitter - NOTICE",
+  "version": "2.6.2",
   "license": "MIT",
   "author": "Peter Naydenov",
   "main": "./src/main.js",
   "type": "module",
   "types": "./types/main.d.ts",
+  "files": [
+    "src",
+    "dist",
+    "types",
+    "skills",
+    "Changelog.md"
+  ],
   "exports": {
     ".": {
-      "import": "./src/main.js",
-      "require": "./dist/notice.cjs",
+      "import": {
+        "types": "./types/main.d.ts",
+        "default": "./src/main.js"
+      },
+      "require": {
+        "types": "./types/main.d.cts",
+        "default": "./dist/notice.cjs"
+      },
       "default": "./src/main.js"
     },
     "./package.json": "./package.json",
@@ -22,7 +35,7 @@
     "test": "vitest run",
     "cover": "vitest run --coverage",
     "build": "rollup -c",
-    "postbuild": "tsc -p tsconfig.json",
+    "postbuild": "tsc -p tsconfig.json && node scripts/cts-types.js",
     "bench": "node benchmark/dispatch.js"
   },
   "repository": {
