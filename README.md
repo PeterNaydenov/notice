@@ -29,6 +29,7 @@ Use method '**stop**' to mute the event for a while. Use method '**start**' to u
 - In version 2.5.0  `on` and `once` silently no-op when the `fn` argument is not a function (previously they stored the value and threw `'fn is not a function'` at `emit` time);
 - In version 2.4.4  Wildcard `emit('*')` and wildcard `stop('*')` / `start('*')` now correctly handle `Symbol` event names;
 - In version 2.4.4  Debug mode (`eBus.debug(true, '[HDR]')`) works with `Symbol` event names — the event name is stringified with `String(e)`;
+- In version 2.6.2  TypeScript types are resolved correctly with `moduleResolution` `node16`, `nodenext` and `bundler`, for both `import` and `require`;
 
 
 
