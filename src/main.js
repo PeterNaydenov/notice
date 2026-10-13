@@ -10,7 +10,7 @@ function notice () {
                         ;
                     /**
                      *  Register a regular event.
-                     *  @param {string|Symbol} e - Name of the event;
+                     *  @param {string|symbol} e - Name of the event;
                      *  @param {function} fn - Behaviour that will be assigned to this eventName;
                      *  @returns void
                      */
@@ -22,7 +22,7 @@ function notice () {
 
                     /**
                      * Register a single event that will be triggered only once.
-                     * @param {string|Symbol} e - Name of the event; the wildcard '*' is not supported.
+                     * @param {string|symbol} e - Name of the event; the wildcard '*' is not supported.
                      * @param {function} fn - Behaviour that will be executed when the event is triggered.
                      */
                     function once ( e, fn ) {
@@ -37,7 +37,7 @@ function notice () {
                      * If 'fx' is not provided, all functions related to the event will be removed.
                      * Works with both regular and single events.
                      *
-                     * @param {string|Symbol} e - Name of the event.
+                     * @param {string|symbol} e - Name of the event.
                      * @param {function} [fx] - Optional. The specific function to be removed.
                      */
                     function off ( e, fx ) {
@@ -82,8 +82,8 @@ function notice () {
                      * skips the remaining regular subscribers and wildcard delivery.
                      * Return values from once and wildcard subscribers are ignored.
                      *
-                     * @param {string|Symbol} e - Name of the event to be triggered.
-                     * @param {...*} [args] - Arguments to be passed to the subscribers.
+                     * @param {string|symbol} e - Name of the event to be triggered.
+                     * @param {...any} args - Arguments to be passed to the subscribers.
                      * @returns void
                      */
                     function emit ( e, ...args ) {
@@ -140,7 +140,7 @@ function notice () {
                     /**
                      * Enables again specified event.
                      *
-                     * @param {string|Symbol} e - Name of the event to be enabled again; the wildcard '*' is supported.
+                     * @param {string|symbol} e - Name of the event to be enabled again; the wildcard '*' is supported.
                      * @returns void
                      */
                     function start ( e ) {
@@ -153,7 +153,7 @@ function notice () {
                     /**
                      * Temporarily disables specified event.
                      *
-                     * @param {string|Symbol} e - Name of the event to be disabled; the wildcard '*' is supported.
+                     * @param {string|symbol} e - Name of the event to be disabled; the wildcard '*' is supported.
                      * @returns void
                      */
                     function stop ( e ) {
